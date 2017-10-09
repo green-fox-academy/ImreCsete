@@ -9,13 +9,13 @@ int doubling(int double_value);
 
 int main()
 {
-    printf("%d\n", doubling(0));
+    printf("%d\n", doubling(input));
 
     return 0;
 }
 
 int doubling(int double_value){
-    int doubles = input * 2;
+    int doubles = double_value * 2;
 
     return doubles;
 }
