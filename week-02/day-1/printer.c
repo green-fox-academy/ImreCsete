@@ -7,10 +7,17 @@
 // can have multiple number of arguments
 // store your variables in a .h file
 
+void printer();
 
 int main()
 {
-    printf("%s\n", PRINT);
+    printer();
 
     return 0;
+}
+
+void printer(){
+
+    printf("%s\n", PRINT);
+
 }
