@@ -27,11 +27,11 @@ int main()
 
 void func(){
 
-    int num[] = {};
+    char str[] = {};
 
-    printf("Insert a number: ");
-    gets(&num);
+    printf("Insert a name: ");
+    gets(str);
 
-    puts(num);
+    puts(str);
 
 }
