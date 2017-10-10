@@ -7,7 +7,7 @@ int main() {
 	//TODO:
     // Print out the array character-by-character
 
-    for (int i = 0; i <= a; i++){
+    for (int i = 0; i < a; i++){
         printf("%c\n", my_name_array[i]);
         }
     return 0;
