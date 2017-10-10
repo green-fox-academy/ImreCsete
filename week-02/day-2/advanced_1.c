@@ -14,12 +14,17 @@ int main()
     // handle the problem when trying to delete from invalid positions (e.g. negative number)
     // print out the the array after the deleting
 
-    printf("Enter the size of the array: ");
+    printf("Enter the size of the array (between 1 and 50): ");
     scanf("%d", &size);
 
-    for (i = 0 ; i < size ; i++) {
+    if (size >= 0 && size >= 50){
+        printf("Invalid number");
+
+    } else {
+        for (i = 0 ; i < size ; i++) {
         printf("%d, ", arr[i] = rand() % 100);
     }
+
     printf("\nEnter the position where you want the element to be deleted: ");
         scanf("%d", &position);
 
@@ -30,11 +35,11 @@ int main()
         for (i = position - 1 ; i < size - 1 ; i++)
         arr[i] = arr[i+1];
 
-        printf("Array after deleting is:\n");
+    printf("Array after deleting is:\n");
 
         for(i = 0 ; i < size - 1 ; i++)
         printf("%d, ", arr[i]);
+        }
     }
-
     return 0;
 }
