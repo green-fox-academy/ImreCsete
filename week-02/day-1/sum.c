@@ -16,7 +16,7 @@ int main()
 int sum(int LIMIT)
 {
     if(LIMIT != 0)
-        return LIMIT + sum(LIMIT-1);
+        return LIMIT + sum(LIMIT - 1);
     else
         return LIMIT;
 }
