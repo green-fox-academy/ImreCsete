@@ -1,1 +1,1 @@
-int input = 10;
+int input = 5;
