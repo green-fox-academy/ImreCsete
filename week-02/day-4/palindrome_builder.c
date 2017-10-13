@@ -19,7 +19,7 @@ void create_palindrome()
     char characters[100];
 
     printf("Please enter some characters that will be returned as a palindrome: ");
-    scanf("%s", characters);
+    gets(characters);
 
     printf("%s", characters);
     printf("%s", strrev(characters));
