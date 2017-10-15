@@ -6,8 +6,8 @@ print them out, using only one printf function
 use correct variables for each
 */
 
-int main() {
-
+int main()
+{
     int age = 26;
     float heightMeter = 1.8;
 

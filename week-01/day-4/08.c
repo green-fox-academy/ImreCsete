@@ -10,11 +10,13 @@ int main()
 {
     int number = 0;
 
-	for (number = 0; number <= 100; number++)
-        if (number%2){
+	for (number = 0; number <= 100; number++) {
+        if (number % 2){
             printf("Even\n");
-        }else{
+        } else {
             printf("Odd\n");
         }
+	}
+
     return 0;
 }

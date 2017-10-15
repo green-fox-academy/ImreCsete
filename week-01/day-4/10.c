@@ -13,9 +13,9 @@ it is up to you to turn on the AC
 int main()
 {
     int temperature;
-    temperature = 23;
+    temperature = 123;
 
-    switch(temperature <= 20 && temperature <= 24){
+    switch(temperature <= 20 && temperature <= 24) {
     case 0:
         printf("It is up to you to turn up the AC\n");
         break;
@@ -23,5 +23,6 @@ int main()
         printf("It is too cold for the AC\n");
         break;
     }
+
     return 0;
 }

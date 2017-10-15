@@ -1,25 +1,39 @@
 #include <stdio.h>
 #include <stdint.h>
 
-int main() {
+int main()
+{
     uint8_t number = 254;
 	uint8_t result;
 
 	result = number + 23;
+
 	// Check the result with printf
+
     printf("%d\n", result);
+
  	// What happened?!
  	//overflow happened
+
 	// Try again with different datatype
+
 	uint16_t result_16 = number + 23;
+
 	// Check the result with printf
+
     printf("%d\n", result_16);
+
 	// What happened and why?
     // 16 bits can handle the number
+
 	int8_t number_negative = number;
+
 	// Check the result with printf
+
     printf("%d\n", number_negative);
+
 	// What happened and why?
 	// Signed results in negative
+
     return 0;
 }

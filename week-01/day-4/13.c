@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 /*
-create a program which converts the fahrenheit to celsius
+create a program which converts the Fahrenheit to Celsius
 the output should look like this:
 Fahrenheit       Celsius
   0               -17.8
@@ -12,14 +12,15 @@ Fahrenheit       Celsius
 print out at least 10 lines
 */
 
-int main() {
-
+int main()
+{
     float f;
 
     f = 0;
-        printf("Farenheit\tCelsius\n");
-    for(f = 0; f <= 180; f+=20){
-        printf("%.0f\t\t%.2f\n", f, (f-32) / 1.8);
+        printf("Fahrenheit\tCelsius\n");
+    for(f = 0; f <= 180; f += 20){
+        printf("%.0f\t\t%.2f\n", f, ((f - 32) / 1.8));
     }
+
 	return 0;
 }

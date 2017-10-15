@@ -6,7 +6,7 @@ int main()
 
 	int number = 0;
 
-	    for (number=0; number <=20; number+=2){
+    for (number = 0; number <= 20; number += 2) {
         printf("%d \n", number);
     }
 

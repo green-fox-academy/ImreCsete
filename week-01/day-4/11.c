@@ -8,25 +8,31 @@ For numbers which are multiples of both three and five print "FizzBuzz".
 But this time, use switch
 */
 
-int main() {
+int main()
+{
+	int number = 0;
 
-	int number = 1;
-
-	for (number = 1; number <= 100; number++){
-        switch (number%3==0){
-        case 1:
-            printf("Fizz");
+	for (number = 1; number <= 100; number++) {
+        switch (number % 15) {
+        case 0:
+            printf("FizzBuzz\n");
             break;
-        }switch (number%5==0){
-            case 1:
-            printf("Buzz");
+        case 5:
+        case 10:
+            printf("Buzz\n");
+            break;
+        case 3:
+        case 6:
+        case 9:
+        case 12:
+            printf("Fizz\n");
             break;
         default:
-            printf("%d", number);
+            printf("%d\n", number);
             break;
-        }   printf("\n");
+        }
 
-    }
+	}
 
 	return 0;
 }

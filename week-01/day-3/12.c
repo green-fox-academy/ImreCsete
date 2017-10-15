@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdint.h>
 
-int main() {
+int main()
+{
     uint8_t a = 60;
     uint8_t b = 0b00111100;
     uint8_t c = 0x3C;
@@ -13,19 +14,27 @@ int main() {
     printf("%d\n", c);
     printf("%d\n", d);
     printf("------------------\n", d);
+
     // Try with %x
+
     printf("%x\n", a);
     printf("%x\n", b);
     printf("%x\n", c);
     printf("%x\n", d);
     printf("------------------\n", d);
+
     // Multiply a by 2
-    printf("%d\n", a*2);
+
+    a = a * 2;
+
     // Shift left b by 1
-    printf("%d\n", b <<= b);
+
+    b = (b << 1);
+
     // Check their values
-    printf("%d\n", a);
-    printf("%d\n", b);
+
+    printf("%x\n", a);
+    printf("%x\n", b);
     printf("------------------\n", d);
 
     return 0;

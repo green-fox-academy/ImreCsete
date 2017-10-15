@@ -15,18 +15,21 @@ Run your program at least 3-4 times, change the variables to see the different o
 #include <stdio.h>
 #include <stdint.h>
 
-int main() {
+int main()
+{
+	int girls_number = 20;
+	int boys_number = 30;
 
-	int girls_number = 0;
-	int boys_number = 0;
-
-	if ((girls_number == boys_number) && (girls_number + boys_number) > 20){
+	if ((girls_number == boys_number) && (girls_number + boys_number) > 20) {
         printf("The party is excellent!\n");
-    }if ((girls_number < boys_number) && (girls_number + boys_number) > 20){
+
+    } if ((girls_number < boys_number) && (girls_number + boys_number) > 20) {
         printf("Quite a cool party!\n");
-    }if ((girls_number + boys_number) < 20 && (girls_number + boys_number) > 0){
+
+    } if ((girls_number + boys_number) < 20 && (girls_number + boys_number) > 0) {
         printf("Average party...\n");
-    }if (boys_number > 1 && girls_number == 0)
+
+    } if (boys_number > 1 && girls_number == 0)
         printf("Sausage party\n");
 
 	return 0;
