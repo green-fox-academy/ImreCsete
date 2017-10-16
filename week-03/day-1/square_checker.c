@@ -7,12 +7,14 @@ int main()
 {
 	float number, result;
 	printf("Please enter a number: ");
+	fflush(stdin);
 	scanf("%f", &number);
 
 	printf("Please enter the square of that number: ");
-	scanf("%f", &result);
+	fflush(stdin);
+    scanf("%f", &result);
 
-	if (sqrt(number) == result)
+	if (powf((number), 2) == result)
 		printf(":)\n");
 	else
 		printf(":(\n");
