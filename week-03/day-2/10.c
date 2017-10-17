@@ -20,8 +20,8 @@ int main()
 	while (token != NULL) {
         printf("%s\n", token);
 
-    token = strtok(NULL, space);
+        token = strtok(NULL, space);
 	}
 
-    return(0);
+    return 0;
 }
