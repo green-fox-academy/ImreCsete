@@ -8,19 +8,14 @@ int main()
 
 	//TODO: write a program, which copies the values from the given array to an integer array
     //print out the elements of the integer array, with the "%d" format specifier
-    //what do you see?
-
-    //strcpy(f_array, i_array);
-
-    //(int)memcpy(f_array, i_array, strlen(f_array) + 1);
-    //memcpy(&f_array, &(float)i_array, sizeof(f_array));
+    //what do you see? - it loses the numbers after the decimal point
 
     for (int i = 0; i < 10; i++) {
         i_array[i] = f_array[i];
     }
 
     for (int i = 0; i < 10; i++) {
-        printf("%f, ", (float)i_array[i]);
+        printf("%d, ", i_array[i]);
     }
 
     return 0;
