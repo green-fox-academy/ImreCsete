@@ -15,7 +15,6 @@ main()
 	//QUESTION: do you need explicit conversion?
 	//ANSWER: only if you print %d
 
-
 	return 0;
 }
 
