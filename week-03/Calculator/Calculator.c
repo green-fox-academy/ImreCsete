@@ -4,7 +4,7 @@
 #include <windows.h>
 
 void startup();
-int summation();
+int summation(char input[]);
 int subtraction();
 int multiplication();
 int division();
@@ -29,12 +29,38 @@ int main()
 
     while (strcmp(input, "exit") != 0) {
         gets(input);
+
         if (strcmp(input, "clear") == 0) {
             clear();
         }
         if (strcmp(input, "help") == 0) {
-        startup();
+            startup();
         }
+        if (strstr(input, "+")) {
+            printf("%d", summation(input));
+        }
+        if (strstr(input, "-")) {
+            printf("%d", substraction(input));
+        }
+        if (strstr(input, "*")) {
+            printf("%d", multiplication(input));
+        }
+        if (strstr(input, "/")) {
+            printf("%d", division(input));
+        }
+        if (strstr(input, "%")) {
+            printf("%d", division_with_remainder(input));
+        }
+        if (strstr(input, "^")) {
+            printf("%d", squaring(input));
+        }
+        if (strstr(input, "<")) {
+            printf("%d", square_root(input));
+        }
+        if (strstr(input, "log")) {
+            printf("%d", logarithm(input));
+        }
+
     }
 
     return 0;
@@ -66,3 +92,16 @@ void clear()
     system("cls");
 }
 
+int summation(char input[])
+{
+    int i;
+    int i2;
+
+    char* token = strtok (input, "+");
+    char* token2 = strtok ('\0', "+");
+
+    i = atoi (token);
+    i2 = atoi (token2);
+
+    return i + i2;
+}
