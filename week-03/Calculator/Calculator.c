@@ -4,14 +4,14 @@
 #include <windows.h>
 
 void startup();
-int summation(char input[]);
-int subtraction();
-int multiplication();
-int division();
+float summation(char input[]);
+float subtraction();
+float multiplication();
+float division();
 int division_with_remainder();
-int squaring();
-int square_root();
-int logarithm();
+float squaring();
+float square_root();
+float logarithm();
 int bin_to();
 int hex_to();
 int dec_to();
@@ -23,7 +23,7 @@ COORD coord = {0,0};
 
 int main()
 {
-    char input[40] = "";
+    char input[200] = "";
 
     startup();
 
@@ -34,31 +34,31 @@ int main()
             clear();
         }
         if (strcmp(input, "help") == 0) {
-            startup();
+            help();
         }
         if (strstr(input, "+")) {
-            printf("%d", summation(input));
+            printf("%f\n", summation(input));
         }
         if (strstr(input, "-")) {
-            printf("%d", substraction(input));
+            printf("%f\n", subtraction(input));
         }
         if (strstr(input, "*")) {
-            printf("%d", multiplication(input));
+            printf("%f\n", multiplication(input));
         }
         if (strstr(input, "/")) {
-            printf("%d", division(input));
+            printf("%f\n", division(input));
         }
         if (strstr(input, "%")) {
-            printf("%d", division_with_remainder(input));
+            printf("%d\n", division_with_remainder(input));
         }
         if (strstr(input, "^")) {
-            printf("%d", squaring(input));
+            printf("%f\n", squaring(input));
         }
         if (strstr(input, "<")) {
-            printf("%d", square_root(input));
+            printf("%f\n", square_root(input));
         }
         if (strstr(input, "log")) {
-            printf("%d", logarithm(input));
+            printf("%f\n", logarithm(input));
         }
 
     }
@@ -92,16 +92,120 @@ void clear()
     system("cls");
 }
 
-int summation(char input[])
+void help()
 {
-    int i;
-    int i2;
+    clear();
+    startup();
+}
+
+float summation(char input[])
+{
+    float i;
+    float i2;
 
     char* token = strtok (input, "+");
     char* token2 = strtok ('\0', "+");
 
+    i = atof (token);
+    i2 = atof (token2);
+
+    return i + i2;
+}
+
+float subtraction(char input[])
+{
+    float i;
+    float i2;
+
+    char* token = strtok (input, "-");
+    char* token2 = strtok ('\0', "-");
+
+    i = atof (token);
+    i2 = atof (token2);
+
+    return i - i2;
+}
+
+float multiplication(char input[])
+{
+    float i;
+    float i2;
+
+    char* token = strtok (input, "*");
+    char* token2 = strtok ('\0', "*");
+
+    i = atof (token);
+    i2 = atof (token2);
+
+    return i * i2;
+}
+
+float division(char input[])
+{
+    float i;
+    float i2;
+
+    char* token = strtok (input, "/");
+    char* token2 = strtok ('\0', "/");
+
+    i = atof (token);
+    i2 = atof (token2);
+
+    return i / i2;
+}
+
+int division_with_remainder(char input[])
+{
+    int i;
+    int i2;
+
+    char* token = strtok (input, "%");
+    char* token2 = strtok ('\0', "%");
+
     i = atoi (token);
     i2 = atoi (token2);
 
-    return i + i2;
+    return i % i2;
+}
+
+float squaring(char input[])
+{
+    float i;
+    float i2;
+
+    char* token = strtok (input, "^");
+    char* token2 = strtok ('\0', "^");
+
+    i = atof (token);
+    i2 = atof (token2);
+
+    return powf(i, i2);
+}
+
+float square_root(char input[])
+{
+    float i;
+    //float i2;
+
+    char* token = strtok (input, "<");
+    char* token2 = strtok ('\0', "<");
+
+    i = atof (token);
+    //i2 = atof (token2);
+
+    return sqrtf(i);
+}
+
+float logarithm(char input[])
+{
+    float i;
+    //float i2;
+
+    char* token = strtok (input, "log");
+    //char* token2 = strtok ('\0', "log");
+
+    i = atof (token);
+    //i2 = atof (token2);
+
+    return logf(i);
 }
