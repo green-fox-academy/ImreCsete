@@ -30,6 +30,8 @@ int main()
     while (strcmp(input, "exit") != 0) {
         gets(input);
 
+        set_cursor_pos(strlen(input), 0);
+
         if (strcmp(input, "clear") == 0) {
             clear();
         }
@@ -37,28 +39,28 @@ int main()
             help();
         }
         if (strstr(input, "+")) {
-            printf(" = %f", summation(input));
+            printf(" = %f\n", summation(input));
         }
         if (strstr(input, "-")) {
-            printf(" = %f", subtraction(input));
+            printf(" = %f\n", subtraction(input));
         }
         if (strstr(input, "*")) {
-            printf(" = %f", multiplication(input));
+            printf(" = %f\n", multiplication(input));
         }
         if (strstr(input, "/")) {
-            printf(" = %f", division(input));
+            printf(" = %f\n", division(input));
         }
         if (strstr(input, "%")) {
-            printf(" = %f", division_with_remainder(input));
+            printf(" = %f\n", division_with_remainder(input));
         }
         if (strstr(input, "^")) {
-            printf(" = %f", squaring(input));
+            printf(" = %f\n", squaring(input));
         }
         if (strstr(input, "<")) {
-            printf(" = %f", square_root(input));
+            printf(" = %f\n", square_root(input));
         }
         if (strstr(input, "log")) {
-            printf(" = %f", logarithm(input));
+            printf(" = %f\n", logarithm(input));
         }
 
     }
