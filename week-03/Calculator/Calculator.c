@@ -8,7 +8,7 @@ float summation(char input[]);
 float subtraction();
 float multiplication();
 float division();
-int division_with_remainder();
+float division_with_remainder();
 float squaring();
 float square_root();
 float logarithm();
@@ -19,7 +19,7 @@ void clear();
 void help();
 void set_cursor_pos(int x, int y);
 
-COORD coord = {0,0};
+COORD coord = {0, 0};
 
 int main()
 {
@@ -37,28 +37,28 @@ int main()
             help();
         }
         if (strstr(input, "+")) {
-            printf("%f\n", summation(input));
+            printf(" = %f", summation(input));
         }
         if (strstr(input, "-")) {
-            printf("%f\n", subtraction(input));
+            printf(" = %f", subtraction(input));
         }
         if (strstr(input, "*")) {
-            printf("%f\n", multiplication(input));
+            printf(" = %f", multiplication(input));
         }
         if (strstr(input, "/")) {
-            printf("%f\n", division(input));
+            printf(" = %f", division(input));
         }
         if (strstr(input, "%")) {
-            printf("%d\n", division_with_remainder(input));
+            printf(" = %f", division_with_remainder(input));
         }
         if (strstr(input, "^")) {
-            printf("%f\n", squaring(input));
+            printf(" = %f", squaring(input));
         }
         if (strstr(input, "<")) {
-            printf("%f\n", square_root(input));
+            printf(" = %f", square_root(input));
         }
         if (strstr(input, "log")) {
-            printf("%f\n", logarithm(input));
+            printf(" = %f", logarithm(input));
         }
 
     }
@@ -154,18 +154,18 @@ float division(char input[])
     return i / i2;
 }
 
-int division_with_remainder(char input[])
+float division_with_remainder(char input[])
 {
-    int i;
-    int i2;
+    float i;
+    float i2;
 
     char* token = strtok (input, "%");
     char* token2 = strtok ('\0', "%");
 
-    i = atoi (token);
-    i2 = atoi (token2);
+    i = atof (token);
+    i2 = atof (token2);
 
-    return i % i2;
+    return fmod(i, i2);
 }
 
 float squaring(char input[])
@@ -188,7 +188,7 @@ float square_root(char input[])
     //float i2;
 
     char* token = strtok (input, "<");
-    char* token2 = strtok ('\0', "<");
+    //char* token2 = strtok ('\0', "<");
 
     i = atof (token);
     //i2 = atof (token2);
@@ -199,13 +199,22 @@ float square_root(char input[])
 float logarithm(char input[])
 {
     float i;
-    //float i2;
+    float i2;
 
     char* token = strtok (input, "log");
-    //char* token2 = strtok ('\0', "log");
+    char* token2 = strtok ('\0', "log");
 
     i = atof (token);
-    //i2 = atof (token2);
+    i2 = atof (token2);
 
-    return logf(i);
+    if (i == 0) {
+        return logf(i2);
+    }
+    if (i == 2) {
+        return log2f(i2);
+    }
+    if (i == 10) {
+        return log10(i2);
+    } else
+        printf("Invalid input for log.");
 }
