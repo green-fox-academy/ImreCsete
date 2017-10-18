@@ -1,7 +1,22 @@
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 
 void startup();
+int summation();
+int subtraction();
+int multiplication();
+int division();
+int division_with_remainder();
+int squaring();
+int square_root();
+int logarithm();
+int bin_to();
+int hex_to();
+int dec_to();
+int exit();
+int clear();
+void help();
 
 int main()
 {
