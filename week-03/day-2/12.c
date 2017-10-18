@@ -13,7 +13,7 @@ int main ()
 
     printf("In the string '%s', character '%s' can be found on the following positions: ", string, i);
 
-    while (p != NULL) {
+    while (p != '\0') {
         p++;
         printf("%d, ", p - string);
         p =	strstr(p, i);
