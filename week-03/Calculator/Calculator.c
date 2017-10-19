@@ -24,19 +24,22 @@ COORD coord = {0, 0};
 int main()
 {
     char input[200] = "";
+    int y_pos = 0;
 
     startup();
 
     while (strcmp(input, "exit") != 0) {
         gets(input);
 
-        set_cursor_pos(strlen(input), 0);
+        set_cursor_pos(strlen(input), y_pos);
 
         if (strcmp(input, "clear") == 0) {
             clear();
+            y_pos = -1;
         }
         if (strcmp(input, "help") == 0) {
             help();
+            y_pos = -1;
         }
         if (strstr(input, "+")) {
             printf(" = %f\n", summation(input));
@@ -62,7 +65,7 @@ int main()
         if (strstr(input, "log")) {
             printf(" = %f\n", logarithm(input));
         }
-
+        ++y_pos;
     }
 
     return 0;
@@ -220,3 +223,17 @@ float logarithm(char input[])
     } else
         printf("Invalid input for log.");
 }
+
+/*int dec_to()
+{
+    int i;
+    int i2;
+
+    char* token = strtok (input, "%");
+    char* token2 = strtok ('\0', "%");
+
+    i = atof (token);
+    i2 = atof (token2);
+
+    return fmod(i, i2);
+}*/
