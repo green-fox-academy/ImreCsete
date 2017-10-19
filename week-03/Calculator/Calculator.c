@@ -2,19 +2,20 @@
 #include <string.h>
 #include <math.h>
 #include <windows.h>
+#include <ctype.h>
 
 void startup();
-float summation(char input[]);
-float subtraction();
-float multiplication();
-float division();
-float division_with_remainder();
-float squaring();
-float square_root();
-float logarithm();
-int binto();
-int hexto();
-int decto();
+void summation();
+void subtraction();
+void multiplication();
+void division();
+void division_with_remainder();
+void squaring();
+void square_root();
+void logarithm();
+void binto();
+void hexto();
+void decto();
 void clear();
 void help();
 void set_cursor_pos(int x, int y);
@@ -23,7 +24,7 @@ COORD coord = {0, 0};
 
 int main()
 {
-        char input[256] = "";
+    char input[256] = "";
     int y_pos = 0;
 
     startup();
@@ -76,7 +77,6 @@ int main()
         }
         ++y_pos;
     }
-
     return 0;
 }
 
@@ -128,21 +128,25 @@ void help()
     startup();
 }
 
-float summation(char input[])
+void summation(char input[])
 {
     float i;
     float i2;
+    char check_arithmetic[] = "1234567890.-";
 
     char* token = strtok (input, "+");
     char* token2 = strtok ('\0', "+");
 
-    i = atof (token);
-    i2 = atof (token2);
+        i = atof (token);
+        i2 = atof (token2);
 
-    printf(" = %f\n", i + i2);
+   if (strspn(token, check_arithmetic) != strlen(token)) {
+        printf(" = %f\n", i + i2);
+   } else
+        printf(" Invalid input\n");
 }
 
-float subtraction(char input[])
+void subtraction(char input[])
 {
     float i;
     float i2;
@@ -153,10 +157,12 @@ float subtraction(char input[])
     i = atof (token);
     i2 = atof (token2);
 
-    printf(" = %f\n", i - i2);
+        printf(" = %f\n", i - i2);
+    /*else
+        printf(" Invalid input");*/
 }
 
-float multiplication(char input[])
+void multiplication(char input[])
 {
     float i;
     float i2;
@@ -167,10 +173,12 @@ float multiplication(char input[])
     i = atof (token);
     i2 = atof (token2);
 
-    printf(" = %f\n", i * i2);
+        printf(" = %f\n", i * i2);
+    /*} else
+        printf(" Invalid input");*/
 }
 
-float division(char input[])
+void division(char input[])
 {
     float i;
     float i2;
@@ -181,10 +189,12 @@ float division(char input[])
     i = atof (token);
     i2 = atof (token2);
 
-    printf(" = %f\n", i / i2);
+        printf(" = %f\n", i / i2);
+  /*  } else
+        printf(" Invalid input");*/
 }
 
-float division_with_remainder(char input[])
+void division_with_remainder(char input[])
 {
     float i;
     float i2;
@@ -195,10 +205,12 @@ float division_with_remainder(char input[])
     i = atof (token);
     i2 = atof (token2);
 
-    printf(" = %f\n", fmod(i, i2));
+        printf(" = %f\n", fmod(i, i2));
+    /*} else
+        printf(" Invalid input");*/
 }
 
-float squaring(char input[])
+void squaring(char input[])
 {
     float i;
     float i2;
@@ -209,10 +221,12 @@ float squaring(char input[])
     i = atof (token);
     i2 = atof (token2);
 
-    printf(" = %f\n", powf(i, i2));
+        printf(" = %f\n", powf(i, i2));
+   /* } else
+        printf(" Invalid input");*/
 }
 
-float square_root(char input[])
+void square_root(char input[])
 {
     float i;
     //float i2;
@@ -226,7 +240,7 @@ float square_root(char input[])
     printf(" = %f\n", sqrtf(i));
 }
 
-float logarithm(char input[])
+void logarithm(char input[])
 {
     float i;
     float i2;
@@ -249,7 +263,7 @@ float logarithm(char input[])
         printf(" Invalid input for log.");
 }
 
-int binto(char input[])
+void binto(char input[])
 {
     int i;
     int i2;
@@ -273,31 +287,29 @@ int binto(char input[])
         printf(" Invalid input.");
 }
 
-int hexto(char input[])
+void hexto(char input[])
 {
     int i;
     int i2;
-    //int bin_to_check;
 
     char* token = strtok (input, "hexto");
     char* token2 = strtok ('\0', "hexto");
 
-    //bin_to_check = atoi (token);
     i = strtol (token, 0, 16);
     i2 = atoi (token2);
 
-   // if (bin_to_check % 10 == 0 || bin_to_check % 10 == 1) {
+    if (i2 != 2 || i2 != 10) {
+        if (i2 == 2) {
+            printf(" = %s\n", ltoa (i, input, 2));
+        }
         if (i2 == 10) {
             printf(" = %s\n", ltoa (i, input, 10));
         }
-        if (i2 == 2) {
-            printf(" = %s\n", ltoa (i, input, 2));
-      //  }
     } else
         printf(" Invalid input.");
 }
 
-int decto(char input[])
+void decto(char input[])
 {
     int i;
     int i2;
