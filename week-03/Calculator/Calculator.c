@@ -12,9 +12,9 @@ float division_with_remainder();
 float squaring();
 float square_root();
 float logarithm();
-int bin_to();
-int hex_to();
-int dec_to();
+int binto();
+int hexto();
+int decto();
 void clear();
 void help();
 void set_cursor_pos(int x, int y);
@@ -23,7 +23,7 @@ COORD coord = {0, 0};
 
 int main()
 {
-    char input[200] = "";
+        char input[256] = "";
     int y_pos = 0;
 
     startup();
@@ -42,28 +42,34 @@ int main()
             y_pos = -1;
         }
         if (strstr(input, "+")) {
-            printf(" = %f\n", summation(input));
+            summation(input);
         }
         if (strstr(input, "-")) {
-            printf(" = %f\n", subtraction(input));
+            subtraction(input);
         }
         if (strstr(input, "*")) {
-            printf(" = %f\n", multiplication(input));
+            multiplication(input);
         }
         if (strstr(input, "/")) {
-            printf(" = %f\n", division(input));
+            division(input);
         }
         if (strstr(input, "%")) {
-            printf(" = %f\n", division_with_remainder(input));
+            division_with_remainder(input);
         }
         if (strstr(input, "^")) {
-            printf(" = %f\n", squaring(input));
+            squaring(input);
         }
         if (strstr(input, "<")) {
-            printf(" = %f\n", square_root(input));
+            square_root(input);
         }
         if (strstr(input, "log")) {
-            printf(" = %f\n", logarithm(input));
+            logarithm(input);
+        }
+        if (strstr(input, "binto")) {
+            binto(input);
+        }
+        if (strstr(input, "decto")) {
+            decto(input);
         }
         ++y_pos;
     }
@@ -130,7 +136,7 @@ float summation(char input[])
     i = atof (token);
     i2 = atof (token2);
 
-    return i + i2;
+    printf(" = %f\n", i + i2);
 }
 
 float subtraction(char input[])
@@ -144,7 +150,7 @@ float subtraction(char input[])
     i = atof (token);
     i2 = atof (token2);
 
-    return i - i2;
+    printf(" = %f\n", i - i2);
 }
 
 float multiplication(char input[])
@@ -158,7 +164,7 @@ float multiplication(char input[])
     i = atof (token);
     i2 = atof (token2);
 
-    return i * i2;
+    printf(" = %f\n", i * i2);
 }
 
 float division(char input[])
@@ -172,7 +178,7 @@ float division(char input[])
     i = atof (token);
     i2 = atof (token2);
 
-    return i / i2;
+    printf(" = %f\n", i / i2);
 }
 
 float division_with_remainder(char input[])
@@ -186,7 +192,7 @@ float division_with_remainder(char input[])
     i = atof (token);
     i2 = atof (token2);
 
-    return fmod(i, i2);
+    printf(" = %f\n", fmod(i, i2));
 }
 
 float squaring(char input[])
@@ -200,7 +206,7 @@ float squaring(char input[])
     i = atof (token);
     i2 = atof (token2);
 
-    return powf(i, i2);
+    printf(" = %f\n", powf(i, i2));
 }
 
 float square_root(char input[])
@@ -214,7 +220,7 @@ float square_root(char input[])
     i = atof (token);
     //i2 = atof (token2);
 
-    return sqrtf(i);
+    printf(" = %f\n", sqrtf(i));
 }
 
 float logarithm(char input[])
@@ -229,27 +235,58 @@ float logarithm(char input[])
     i2 = atof (token2);
 
     if (i == 0) {
-        return logf(i2);
+        printf(" = %f\n", logf(i2));
     }
     if (i == 2) {
-        return log2f(i2);
+        printf(" = %f\n", log2f(i2));
     }
     if (i == 10) {
-        return log10(i2);
+        printf(" = %f\n", log10f(i2));
     } else
-        printf("Invalid input for log.");
+        printf(" Invalid input for log.");
 }
 
-/*int dec_to()
+int binto(char input[])
+{
+    int i;
+    int i2;
+    int bincheck;
+    long input_to_bin;
+
+    char* token = strtok (input, "binto");
+    char* token2 = strtok ('\0', "binto");
+
+    bincheck = atoi (token);
+    i = strtol (token, 0, 2);
+    i2 = atoi (token2);
+
+    if (bincheck % 10 == 0 || bincheck % 10 == 1) {
+        if (i2 == 10) {
+            printf(" = %s\n", ltoa (i, input, 10));
+        }
+        if (i2 == 16) {
+            printf(" = %s\n", ltoa (i, input, 16));
+        }
+    } else
+        printf(" Invalid input.");
+}
+
+int decto(char input[])
 {
     int i;
     int i2;
 
-    char* token = strtok (input, "%");
-    char* token2 = strtok ('\0', "%");
+    char* token = strtok (input, "decto");
+    char* token2 = strtok ('\0', "decto");
 
-    i = atof (token);
-    i2 = atof (token2);
+    i = atoi (token);
+    i2 = atoi (token2);
 
-    return fmod(i, i2);
-}*/
+    if (i2 == 2) {
+        printf(" = %s\n", itoa (i, input, 2));
+    }
+    if (i2 == 16) {
+        printf(" = %s\n", itoa (i, input, 16));
+    } else
+        printf(" Invalid input for decto.");
+}
