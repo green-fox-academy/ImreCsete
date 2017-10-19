@@ -68,6 +68,9 @@ int main()
         if (strstr(input, "binto")) {
             binto(input);
         }
+        if (strstr(input, "hexto")) {
+            hexto(input);
+        }
         if (strstr(input, "decto")) {
             decto(input);
         }
@@ -250,23 +253,46 @@ int binto(char input[])
 {
     int i;
     int i2;
-    int bincheck;
-    long input_to_bin;
+    int bin_to_check;
 
     char* token = strtok (input, "binto");
     char* token2 = strtok ('\0', "binto");
 
-    bincheck = atoi (token);
+    bin_to_check = atoi (token);
     i = strtol (token, 0, 2);
     i2 = atoi (token2);
 
-    if (bincheck % 10 == 0 || bincheck % 10 == 1) {
+    if (bin_to_check % 10 == 0 || bin_to_check % 10 == 1) {
         if (i2 == 10) {
             printf(" = %s\n", ltoa (i, input, 10));
         }
         if (i2 == 16) {
             printf(" = %s\n", ltoa (i, input, 16));
         }
+    } else
+        printf(" Invalid input.");
+}
+
+int hexto(char input[])
+{
+    int i;
+    int i2;
+    //int bin_to_check;
+
+    char* token = strtok (input, "hexto");
+    char* token2 = strtok ('\0', "hexto");
+
+    //bin_to_check = atoi (token);
+    i = strtol (token, 0, 16);
+    i2 = atoi (token2);
+
+   // if (bin_to_check % 10 == 0 || bin_to_check % 10 == 1) {
+        if (i2 == 10) {
+            printf(" = %s\n", ltoa (i, input, 10));
+        }
+        if (i2 == 2) {
+            printf(" = %s\n", ltoa (i, input, 2));
+      //  }
     } else
         printf(" Invalid input.");
 }
@@ -282,11 +308,13 @@ int decto(char input[])
     i = atoi (token);
     i2 = atoi (token2);
 
-    if (i2 == 2) {
-        printf(" = %s\n", itoa (i, input, 2));
-    }
-    if (i2 == 16) {
-        printf(" = %s\n", itoa (i, input, 16));
+    if (i2 != 2 || i2 != 16) {
+        if (i2 == 2) {
+            printf(" = %s\n", itoa (i, input, 2));
+        }
+        if (i2 == 16) {
+            printf(" = %s\n", itoa (i, input, 16));
+        }
     } else
-        printf(" Invalid input for decto.");
+        printf(" Invalid input.");
 }
