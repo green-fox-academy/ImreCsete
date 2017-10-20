@@ -150,6 +150,7 @@ void subtraction(char input[])
 {
     float i;
     float i2;
+    char check_arithmetic[] = "1234567890.";
 
     char* token = strtok (input, "-");
     char* token2 = strtok ('\0', "-");
@@ -157,8 +158,9 @@ void subtraction(char input[])
     i = atof (token);
     i2 = atof (token2);
 
+    if (strspn(token, check_arithmetic) != strlen(token)) {
         printf(" = %f\n", i - i2);
-    /*else
+    }/*else
         printf(" Invalid input");*/
 }
 
@@ -166,15 +168,17 @@ void multiplication(char input[])
 {
     float i;
     float i2;
+    char check_arithmetic[] = "1234567890.-";
 
     char* token = strtok (input, "*");
     char* token2 = strtok ('\0', "*");
 
+    if (strspn(token, check_arithmetic) != strlen(token)) {
     i = atof (token);
     i2 = atof (token2);
 
         printf(" = %f\n", i * i2);
-    /*} else
+    }/*} else
         printf(" Invalid input");*/
 }
 
@@ -182,15 +186,17 @@ void division(char input[])
 {
     float i;
     float i2;
+    char check_arithmetic[] = "1234567890.-";
 
     char* token = strtok (input, "/");
     char* token2 = strtok ('\0', "/");
 
+    if (strspn(token, check_arithmetic) != strlen(token)) {
     i = atof (token);
     i2 = atof (token2);
 
         printf(" = %f\n", i / i2);
-  /*  } else
+  }/*  } else
         printf(" Invalid input");*/
 }
 
@@ -198,15 +204,17 @@ void division_with_remainder(char input[])
 {
     float i;
     float i2;
+    char check_arithmetic[] = "1234567890.-";
 
     char* token = strtok (input, "%");
     char* token2 = strtok ('\0', "%");
 
+    if (strspn(token, check_arithmetic) != strlen(token)) {
     i = atof (token);
     i2 = atof (token2);
 
         printf(" = %f\n", fmod(i, i2));
-    /*} else
+    }/*} else
         printf(" Invalid input");*/
 }
 
@@ -214,15 +222,17 @@ void squaring(char input[])
 {
     float i;
     float i2;
+    char check_arithmetic[] = "1234567890.-";
 
     char* token = strtok (input, "^");
     char* token2 = strtok ('\0', "^");
 
+    if (strspn(token, check_arithmetic) != strlen(token)) {
     i = atof (token);
     i2 = atof (token2);
 
         printf(" = %f\n", powf(i, i2));
-   /* } else
+   }/* } else
         printf(" Invalid input");*/
 }
 
