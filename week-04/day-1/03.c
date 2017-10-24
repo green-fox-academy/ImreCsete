@@ -10,7 +10,7 @@ int main()
 
     *number_pointer = 42;
 
-    printf("%d", number);
+    printf("%d\n", number);
 
     return 0;
 }

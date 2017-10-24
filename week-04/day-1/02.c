@@ -8,7 +8,7 @@ int main()
     //TODO:
     // print the value of number using the "number_pointer"
 
-    printf("%d", *number_pointer);
+    printf("%d\n", *number_pointer);
 
     return 0;
 }
