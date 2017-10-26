@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <windows.h>
+#include <string.h>
 
 void ToDo_Startup()
 {
@@ -13,5 +15,15 @@ printf("Todo application\n"
     "-rm\tRemoves a task\n"
     "-c\tCompletes a task\n"
     "-p\tAdd priority to a task\n"
-    "-lp\tLists all the tasks by priority\n");
+    "-lp\tLists all the tasks by priority\n\n");
+}
+
+void Clear()
+{
+    system("cls");
+}
+
+void Add_Task()
+{
+
 }
