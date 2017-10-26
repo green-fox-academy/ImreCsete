@@ -1,0 +1,8 @@
+# depslib dependency file v1.0
+1508456443 source:c:\users\imre\desktop\c code\week-03\calculator\calculator.c
+	<stdio.h>
+	<string.h>
+	<math.h>
+	<windows.h>
+	<ctype.h>
+

@@ -34,6 +34,9 @@
 		<Unit filename="ToDo.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="ToDo_Fun.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Extensions>
 			<code_completion />
 			<envvars />

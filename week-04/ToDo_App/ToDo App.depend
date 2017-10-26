@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1509010111 source:c:\users\imre\desktop\c code\week-04\todo_app\todo.c
+	<stdio.h>
+	"ToDo_Fun.h"
+
+1509004242 c:\users\imre\desktop\c code\week-04\todo_app\todo_fun.c
+	<stdio.h>
+
+1509004242 source:c:\users\imre\desktop\c code\week-04\todo_app\todo_fun.c
+	<stdio.h>
+
+1509010111 c:\users\imre\desktop\c code\week-04\todo_app\todo_fun.h
+
