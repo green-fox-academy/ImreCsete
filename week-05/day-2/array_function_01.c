@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include <stdint.h>
-#include <string.h>
 
 /*
  * Create a function that takes an array as argument and it's length. Determine the right data types to do this.
@@ -19,11 +18,13 @@
  */
 
 int *function_sort(int *unsorted_array, uint16_t array_length);
+int function_search(int *unsorted_array, uint16_t array_length, int guess);
 
 int main()
 {
     int unsorted_array[50];
     int *pointer_sort;
+    int guess;
 
         for (int i = 0; i < (sizeof(unsorted_array) / sizeof(unsorted_array[0])); i++)
             unsorted_array[i] = rand() % 1000;
@@ -38,6 +39,15 @@ int main()
 
         for (int i = 0; i < 50; i++)
             printf("%d, ", *(pointer_sort + i));
+
+        printf("\nPlease insert a number to be checked with the array: ");
+        scanf("%d", &guess);
+
+        if (function_search(pointer_sort, (sizeof(unsorted_array) / sizeof(unsorted_array[0])), guess) == 0)
+            printf("\n%d is part of the array.\n", guess);
+
+        if (function_search(pointer_sort, (sizeof(unsorted_array) / sizeof(unsorted_array[0])), guess) == -1)
+            printf("\n%d is not part of the array.\n", guess);
 
         return 0;
 }
@@ -55,10 +65,17 @@ int *function_sort(int *unsorted_array, uint16_t array_length)
             }
     }
 
-  //  memcpy(sorted_array, unsorted_array, (array_length);
-
     for (int i = 0; i < (array_length); i++)
         sorted_array[i] = unsorted_array[i];
 
     return sorted_array;
+}
+
+int function_search(int *unsorted_array, uint16_t array_length, int guess)
+{
+    for (int i = 0; i < array_length; i++) {
+        if (unsorted_array[i] == guess)
+        return 0;
+    }
+    return -1;
 }
