@@ -39,6 +39,10 @@
             }
     }
 
+    chess_board[0][1] = 75, chess_board[0][6] = 75, chess_board[5][2] = 75, chess_board[7][6] = 75; // Knight and White Knight to C;3
+    chess_board[0][2] = 66, chess_board[0][5] = 66, chess_board[7][2] = 66, chess_board[7][5] = 66; // Bishop
+    chess_board[0][3] = 81, chess_board[7][3] = 81; // Queen
+    chess_board[0][4] = 241, chess_board[7][4] = 241; // King
 
 
     for (i = 0; i < 8; i++) {
