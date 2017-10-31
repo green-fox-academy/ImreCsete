@@ -8,7 +8,7 @@
  * Print it out before and after to be able to check whether it works as supposed.
  */
 
-void function_short(int *array_of_integers, uint16_t array_length);
+void function_sort(int *array_of_integers, uint16_t array_length);
 
 int main()
 {
@@ -22,12 +22,12 @@ int main()
 
     printf("\n");
 
-    function_short(array_of_integers, (sizeof(array_of_integers) / sizeof(array_of_integers[0])));
+    function_sort(array_of_integers, (sizeof(array_of_integers) / sizeof(array_of_integers[0])));
 
     return 0;
 }
 
-void function_short(int *array_of_integers, uint16_t array_length)
+void function_sort(int *array_of_integers, uint16_t array_length)
 {
     for (int j = 0; j < array_length - 1; j++) {
         for (int i = 0; i < array_length - j - 1; i++)
