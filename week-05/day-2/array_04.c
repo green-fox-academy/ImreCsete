@@ -37,9 +37,24 @@ int main()
     char_array[8] = array_Fox;
 
     for (int i = 0; i < (sizeof(char_array) / sizeof(char_array[0])); i++)
-        printf("%s ", char_array[i]);
+        printf("%s\n", char_array[i]);
+
+    printf("\n");
+
+    array_brown[0] = 'g';
+    array_brown[1] = 'r';
+    array_brown[2] = 'e';
+    array_brown[3] = 'e';
+    array_brown[4] = 'n';
+    array_brown[5] = '\0';
+
+    int temp = char_array[3]; // swap Dog to Fox
+    char_array[3] = char_array[8];
+    char_array[8] = temp;
 
 
+    for (int i = 0; i < (sizeof(char_array) / sizeof(char_array[0])); i++)
+        printf("%s\n", char_array[i]);
 
     return 0;
 }
