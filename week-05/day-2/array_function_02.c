@@ -20,37 +20,38 @@ char replace_function(char *array1, char *array2, int number);
 
 int main()
 {
-    time_t t;
     int index_number = 0;
 
-    srand((unsigned) time(&t));
-
-    char array_destination[25] = "RandomNumberGenerator";
-    char array_source[10] = "IsAwesome";
-
-  /*  for (int i = 0; i < (sizeof(array_destination) / sizeof(array_destination[0])); i++)
-        array_destination[i] = (rand() % ('Z' + 1 - 'A') + 'A');
-
-    for (int i = 0; i < (sizeof(array_source) / sizeof(array_source[0])); i++)
-        array_source[i] = (rand() % ('Z' + 1 - 'A') + 'A'); */
+    char array_destination[] = "RandomNumberGenerator";
+    char array_source[] = "IsAwesome";
 
     printf("The first character array before replace_function is called: \n\n\t");
 
-    for (int i = 0; i < (sizeof(array_destination) / sizeof(array_destination[0])); i++)
+    for (int i = 0; i < strlen(array_destination); i++)
         printf("%c", array_destination[i]);
 
     printf("\n\nThe second character array before replace_function is called: \n\n\t");
 
-    for (int i = 0; i < (sizeof(array_source) / sizeof(array_source[0])); i++)
+    for (int i = 0; i < strlen(array_source); i++)
         printf("%c", array_source[i]);
 
     printf("\n\nPlease give the index number for the replace_function: ");
-    scanf("%d", &index_number);/*
+    scanf("%d", &index_number);
 
     if (replace_function(array_destination, array_source, index_number) == -1)
-        printf("\nIndex [%d] is out of bounds. The length of array_destination is %d", index_number, strlen(array_destination));
+        printf("\nIndex [%d] is out of bounds. The length of the first array is %d\n", index_number, strlen(array_destination));
 
-    //printf("\n%d", replace_function(array_destination, array_source, index_number)); */
+    if (replace_function(array_destination, array_source, index_number) == 0) {
+        printf("\n\nThe replace_function was successful!\n\nThe first array after replace_function was called: \n\n\t");
+
+        for (int i = 0; i < strlen(array_destination); i++)
+            printf("%c", array_destination[i]);
+
+            printf("\n");
+    }
+
+   if (replace_function(array_destination, array_source, index_number) == 1)
+        printf("\nThe replace_function can't be initialized. The length of the second array is %d, which is too long to be copied.\n", strlen(array_source));
 
     return 0;
 }
@@ -65,10 +66,9 @@ char replace_function(char *array1, char *array2, int number)
         return 1;
     }
 
-    for (int i = 0; i < strlen(array1); i++)
+    for (int i = 0; i < strlen(array2); i++) {
         array1[i + number] = array2[i];
+    }
 
-    for (int i = 0; i < strlen(array1); i++)
-        printf("%c", array1[i]);
     return 0;
 }
