@@ -13,7 +13,7 @@ int main()
 
     cin >> name;
 
-    cout << endl << "Hello " << name << "!" <<endl;
+    cout << endl << "Hello " << name << "!" << endl;
 
     return 0;
 }
