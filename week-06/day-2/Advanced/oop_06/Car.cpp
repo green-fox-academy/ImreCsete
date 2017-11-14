@@ -17,7 +17,6 @@ string Car::get_type() {
 }
 
 void Car::run(unsigned int add_km) {
-    int i;
-    for (i = 0; i < add_km; i++);
-    km = km + i;
+        for (int i = 0; i < add_km; i++)
+        km++;
 }
