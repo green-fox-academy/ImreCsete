@@ -8,10 +8,13 @@ class Student {
         string name;
         unsigned int age;
 
-        Student(string name, unsigned int age) {
-            this->age = age;
-            this->name = name;
-        }
+    Student(string name, unsigned int age) {
+        this->age = age;
+        this->name = name;
+    }
+
+    ~Student() {
+    }
 };
 
     // Create a new instance of the Student class and set it's name to "John" and
