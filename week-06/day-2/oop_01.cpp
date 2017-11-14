@@ -13,8 +13,11 @@ class Student {
             age = x;
         }
 
-        string name;
-        unsigned int age;
+    string name;
+    unsigned int age;
+
+    ~Student() {
+    }
 };
 
     // Create a new instance of the Student class and set it's name to "John" and
@@ -28,7 +31,7 @@ int main()
 
     student1.set_age(21);
 
-    cout << student1.name << endl << student1.age;
+    cout << student1.name << endl << student1.age << endl;
 
     return 0;
 }
