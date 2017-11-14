@@ -27,8 +27,8 @@ class Car {
     }
 
     void run(unsigned int add_km) {
-        for (int i = 0; i <= add_km; i++)
-            km = km + i;
+        for (int i = 0; i < add_km; i++)
+        km++;
     }
 };
 
