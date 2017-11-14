@@ -10,6 +10,9 @@ class House {
         unsigned int price;
 
     public:
+        string get_address() {
+            return address;
+        }
         unsigned int get_price() {
             return this->price * this->area;
         }
@@ -31,7 +34,7 @@ int main()
 
     House house = House("Andrassy 66", 349);
 
-    cout << house.get_price();
+    cout << "The price of the house on " << house.get_address() << " is " << house.get_price() << " EUR." << endl;
 
     return 0;
 }
