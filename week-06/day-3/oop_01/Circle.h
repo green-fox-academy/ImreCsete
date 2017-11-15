@@ -10,7 +10,6 @@ class Circle: public Shape
 
     private:
         float radius;
-        ;
 };
 
 #endif // CIRCLE_H

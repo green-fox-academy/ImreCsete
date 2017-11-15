@@ -28,9 +28,9 @@ float Triangle::get_c()
 
 float Triangle::calc_area(float a, float b, float c)
 {
-    float s =(a + b + c)/2;
+    float s = (a + b + c) / 2;
 
-	area=sqrt(s*(s-a)*(s-b)*(s-c));
+	float area = sqrt (s * (s - a) * (s - b) * (s - c));
 
    return area;
 }
