@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="ToDoApp_Factory" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/ToDoApp_Factory" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/ToDoApp_Factory" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+		</Compiler>
+		<Unit filename="Command_-a.cpp" />
+		<Unit filename="Command_-a.h" />
+		<Unit filename="Command_-c.cpp" />
+		<Unit filename="Command_-c.h" />
+		<Unit filename="Command_-e.cpp" />
+		<Unit filename="Command_-e.h" />
+		<Unit filename="Command_-l.cpp" />
+		<Unit filename="Command_-l.h" />
+		<Unit filename="Command_-lp.cpp" />
+		<Unit filename="Command_-lp.h" />
+		<Unit filename="Command_-p.cpp" />
+		<Unit filename="Command_-p.h" />
+		<Unit filename="Command_-rd.cpp" />
+		<Unit filename="Command_-rd.h" />
+		<Unit filename="Command_-rm.cpp" />
+		<Unit filename="Command_-rm.h" />
+		<Unit filename="Command_-wr.cpp" />
+		<Unit filename="Command_-wr.h" />
+		<Unit filename="Command_Factory.cpp" />
+		<Unit filename="Command_Factory.h" />
+		<Unit filename="Task.cpp" />
+		<Unit filename="Task.h" />
+		<Unit filename="main.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

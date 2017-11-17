@@ -1,0 +1,93 @@
+# depslib dependency file v1.0
+1510913589 source:c:\users\imre\desktop\c code\week-06\todoapp_factory\todoapp_factory\main.cpp
+	<iostream>
+	"Task.h"
+	"Command_a.h"
+	"Command_wr.h"
+	"Command_rd.h"
+	"Command_l.h"
+	"Command_e.h"
+	"Command_rm.h"
+	"Command_c.h"
+	"Command_p.h"
+	"Command_lp.h"
+	"Command_Factory.h"
+	"Utility.h"
+
+1510911098 c:\users\imre\desktop\c code\week-06\todoapp_factory\todoapp_factory\task.h
+
+1510914089 c:\users\imre\desktop\c code\week-06\todoapp_factory\todoapp_factory\command_a.h
+	"Task.h"
+
+1510914126 c:\users\imre\desktop\c code\week-06\todoapp_factory\todoapp_factory\command_wr.h
+	"Task.h"
+
+1510914126 c:\users\imre\desktop\c code\week-06\todoapp_factory\todoapp_factory\command_rd.h
+	"Task.h"
+
+1510914126 c:\users\imre\desktop\c code\week-06\todoapp_factory\todoapp_factory\command_l.h
+	"Task.h"
+
+1510914126 c:\users\imre\desktop\c code\week-06\todoapp_factory\todoapp_factory\command_e.h
+	"Task.h"
+
+1510914126 c:\users\imre\desktop\c code\week-06\todoapp_factory\todoapp_factory\command_rm.h
+	"Task.h"
+
+1510914126 c:\users\imre\desktop\c code\week-06\todoapp_factory\todoapp_factory\command_c.h
+	"Task.h"
+
+1510914126 c:\users\imre\desktop\c code\week-06\todoapp_factory\todoapp_factory\command_p.h
+	"Task.h"
+
+1510914126 c:\users\imre\desktop\c code\week-06\todoapp_factory\todoapp_factory\command_lp.h
+	"Task.h"
+
+1510913616 c:\users\imre\desktop\c code\week-06\todoapp_factory\todoapp_factory\command_factory.h
+
+1510913638 c:\users\imre\desktop\c code\week-06\todoapp_factory\todoapp_factory\utility.h
+
+1510911498 source:c:\users\imre\desktop\c code\week-06\todoapp_factory\todoapp_factory\command_factory.cpp
+	"Command_Factory.h"
+	<iostream>
+
+1510913638 source:c:\users\imre\desktop\c code\week-06\todoapp_factory\todoapp_factory\utility.cpp
+	"Utility.h"
+	<iostream>
+
+1510913660 source:c:\users\imre\desktop\c code\week-06\todoapp_factory\todoapp_factory\task.cpp
+	"Task.h"
+	<iostream>
+
+1510912366 source:c:\users\imre\desktop\c code\week-06\todoapp_factory\todoapp_factory\command_a.cpp
+	"Command_a.h"
+	<iostream>
+
+1510912366 source:c:\users\imre\desktop\c code\week-06\todoapp_factory\todoapp_factory\command_c.cpp
+	"Command_c.h"
+	<iostream>
+
+1510912366 source:c:\users\imre\desktop\c code\week-06\todoapp_factory\todoapp_factory\command_l.cpp
+	"Command_l.h"
+	<iostream>
+
+1510912366 source:c:\users\imre\desktop\c code\week-06\todoapp_factory\todoapp_factory\command_lp.cpp
+	"Command_lp.h"
+	<iostream>
+
+1510912366 source:c:\users\imre\desktop\c code\week-06\todoapp_factory\todoapp_factory\command_rd.cpp
+	"Command_rd.h"
+	<iostream>
+
+1510912366 source:c:\users\imre\desktop\c code\week-06\todoapp_factory\todoapp_factory\command_rm.cpp
+	"Command_rm.h"
+	<iostream>
+
+1510912366 source:c:\users\imre\desktop\c code\week-06\todoapp_factory\todoapp_factory\command_wr.cpp
+	"Command_wr.h"
+	<iostream>
+
+1510914147 source:c:\users\imre\desktop\c code\week-06\todoapp_factory\todoapp_factory\command_e.cpp
+	"Command_e.h"
+	<iostream>
+
