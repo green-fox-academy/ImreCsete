@@ -11,10 +11,10 @@ using namespace std;
  *  - get_fibonacci_number(3) returns 1
  *  - get_fibonacci_number(4) returns 2
  *  - get_fibonacci_number(5) returns 3
+ *  Negative numbers are invalid parameters.
  *  - get_fibonacci_number(6) returns 5
  *
  *  If the function gets invalid parameter
- *  Negative numbers are invalid parameters.
  *  It should throw an exception
  */
 
@@ -28,11 +28,12 @@ int main() {
     cin >> a;
 
     try {
-            if (a < 0) {
-                throw runtime_error("Invalid number");
-            } else cout << get_fibonacci_number(a) << endl;
-                } catch(runtime_error &error) {
-                    cout << "ERROR: " << error.what() << "." << endl;
+        if (a < 0) {
+            throw runtime_error("Invalid number");
+        } else cout << get_fibonacci_number(a) << endl;
+
+        } catch(runtime_error &error) {
+            cout << "ERROR: " << error.what() << "." << endl;
     }
 
     return 0;
