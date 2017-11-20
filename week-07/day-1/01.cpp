@@ -27,8 +27,9 @@ int main() {
         } else cout << fixed << setprecision(1) << endl << a << " / " << b << " = " << c << endl << endl << "Congratulations, your ability to follow instructions is amazing!" << endl;
 
     }   catch (int x) {
-        cout << "ERROR: b is 0." << endl << "I am disappointed in you." << endl;
+        cout << "ERROR " << x << ": b is zero." << endl << "I am disappointed in you." << endl;
     }
 
 	return 0;
 }
+
