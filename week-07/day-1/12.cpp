@@ -37,12 +37,12 @@ int main()
 
 const char* write_element(int element)
 {
-    if (sizeof(sentence) / sizeof(sentence[0]) <= element) {
-        throw (element - sizeof(sentence) / sizeof(sentence[0]));
+    if (element < 0) {
+        throw "Negative number";
     }
 
-    else if (element < 0) {
-        throw "Negative number";
+    else if (sizeof(sentence) / sizeof(sentence[0]) <= element) {
+        throw (element - sizeof(sentence) / sizeof(sentence[0]));
     }
 
     return sentence[element];
