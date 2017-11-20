@@ -32,7 +32,7 @@ int main() {
             throw runtime_error("Invalid number");
         } else cout << get_fibonacci_number(a) << endl;
 
-        } catch(runtime_error &error) {
+    } catch(runtime_error &error) {
             cout << "ERROR: " << error.what() << "." << endl;
     }
 
