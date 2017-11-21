@@ -11,8 +11,8 @@ using namespace std;
 int add_integer(int a, int b);
 int add_integer(int a, int b, int c);
 
-int main() {
-
+int main()
+{
     cout << add_integer(1, 2) << endl << add_integer(1, 2, 3) << endl;
 
 	return 0;
