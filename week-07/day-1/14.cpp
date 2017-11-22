@@ -12,18 +12,18 @@ using namespace std;
 class Person {
     public:
         static int &get_counter()
-    {
-       static int counter = 1;
-       return counter;
-    }
-    int total_count()
-    {
-       return get_counter()++;
-    }
-    Person(char *time)
-    {
-        cout << total_count() << ". object of Person class was created at: " << time;
-    }
+        {
+            static int counter = 1;
+            return counter;
+        }
+        int total_count()
+        {
+            return get_counter()++;
+        }
+        Person(char *time)
+        {
+            cout << total_count() << ". object of Person class was created at: " << time;
+        }
 };
 
 int main() {
