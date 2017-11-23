@@ -1,9 +1,14 @@
 # depslib dependency file v1.0
-1511427394 source:c:\users\imre\desktop\c code\week-07\temperature_logger\main.cpp
+1511432195 source:c:\users\imre\desktop\c code\week-07\temperature_logger\main.cpp
 	<iostream>
 	<string>
 	<vector>
+	<thread>
+	<chrono>
+	<cstdlib>
 	"SerialPortWrapper.h"
+	"Temperature.h"
+	"Utility.h"
 
 1511377544 c:\users\imre\desktop\c code\week-07\temperature_logger\serialportwrapper.h
 	<string>
@@ -31,4 +36,22 @@
 	"rs232.h"
 	<stdio.h>
 	<string.h>
+
+1511432463 c:\users\imre\desktop\c code\week-07\temperature_logger\temperature.h
+	<vector>
+	<string>
+
+1511432216 c:\users\imre\desktop\c code\week-07\temperature_logger\utility.h
+
+1511432436 source:c:\users\imre\desktop\c code\week-07\temperature_logger\utility.cpp
+	"Utility.h"
+	<iostream>
+	<thread>
+	<chrono>
+	<cstdlib>
+
+1511432376 source:c:\users\imre\desktop\c code\week-07\temperature_logger\temperature.cpp
+	"Temperature.h"
+	<vector>
+	<string>
 
