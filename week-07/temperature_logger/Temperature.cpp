@@ -13,3 +13,12 @@ Temperature::~Temperature()
 {
     //dtor
 }
+
+string Temperature::validity_check(string for_check)
+{
+    /*string date;
+    string time;
+    string temperature;
+
+    for_check.substr(0, find_last_of '.')*/
+}

@@ -13,6 +13,7 @@ using namespace std;
 int main()
 {
     Temperature temp;
+    SerialPortWrapper *serial = new SerialPortWrapper("COM5", 115200);
 
     command_list();
 
@@ -21,6 +22,11 @@ int main()
 
         cout << "Please enter your command: ";
             getline(cin, temp.user_input);
+            cout << endl;
+
+        if (temp.user_input == "h") {
+                command_list();
+        }
 
         if (temp.user_input == "o") {
 
@@ -29,12 +35,14 @@ int main()
             for (unsigned int i = 0; i < ports.size(); i++) {
                 cout << "\tPort name: " << ports.at(i) << endl;
             }
-        }
-            // connection
 
-        if (temp.user_input == "s") { thread t1(loop_breaker);
-            SerialPortWrapper *serial = new SerialPortWrapper("COM5", 115200);
+            // connection
             serial->openPort();
+            cout << endl << "Ports are open." << endl;
+        }
+
+        if (temp.user_input == "s") {
+            thread t1(loop_breaker);
             string line;
             cout << endl;
             while (1) {
@@ -46,8 +54,14 @@ int main()
                     break;
                 }
             }
-            serial->closePort();
         }
+
+        if (temp.user_input == "c") {
+            serial->closePort();
+            cout << endl << "Ports are closed." << endl;
+        }
+
     }
+
     return 0;
 }

@@ -12,6 +12,7 @@ class Temperature
         Temperature();
         ~Temperature();
         vector <string> output;
+        string validity_check(string for_check);
         string user_input;
 
     protected:
