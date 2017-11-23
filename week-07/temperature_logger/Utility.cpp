@@ -1,12 +1,11 @@
 #include "Utility.h"
 #include <iostream>
-#include <thread>
-#include <chrono>
-#include <cstdlib>
+#include <string>
+#include <windows.h>
+
+#include "Temperature.h"
 
 using namespace std;
-using namespace chrono;
-
 
 void command_list()
 {
@@ -21,13 +20,11 @@ void command_list()
         << "e        Exit from the program" << endl << endl;
 }
 
-int timeout()
+int loop_breaker()
 {
-    using namespace chrono;
+    if (GetAsyncKeyState(0x53) & 0x8000) {
+            return 0;
+    }
 
-    auto start = high_resolution_clock::now();
-
-    this_thread::sleep_for(minutes(10));
-
-    exit(0);
+    return 1;
 }

@@ -13,13 +13,3 @@ Temperature::~Temperature()
 {
     //dtor
 }
-
-vector <string> Temperature::output()
-{
-
-}
-
-vector <string> Temperature::user_input()
-{
-
-}

@@ -11,8 +11,8 @@ class Temperature
     public:
         Temperature();
         ~Temperature();
-        vector <string> output();
-        vector <string> user_input();
+        vector <string> output;
+        string user_input;
 
     protected:
 

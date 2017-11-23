@@ -1,9 +1,10 @@
 #ifndef UTILITY_H
 #define UTILITY_H
+#include <string>
 
-enum commands {H, O, S, C, L, E};
+using namespace std;
 
 void command_list();
-int timeout();
+int loop_breaker();
 
 #endif // UTILITY_H

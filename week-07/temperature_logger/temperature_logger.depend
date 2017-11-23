@@ -1,11 +1,12 @@
 # depslib dependency file v1.0
-1511432195 source:c:\users\imre\desktop\c code\week-07\temperature_logger\main.cpp
+1511443489 source:c:\users\imre\desktop\c code\week-07\temperature_logger\main.cpp
 	<iostream>
 	<string>
 	<vector>
 	<thread>
-	<chrono>
-	<cstdlib>
+	<windows.h>
+	<conio.h>
+	<cstdio>
 	"SerialPortWrapper.h"
 	"Temperature.h"
 	"Utility.h"
@@ -37,20 +38,21 @@
 	<stdio.h>
 	<string.h>
 
-1511432463 c:\users\imre\desktop\c code\week-07\temperature_logger\temperature.h
+1511433277 c:\users\imre\desktop\c code\week-07\temperature_logger\temperature.h
 	<vector>
 	<string>
 
-1511432216 c:\users\imre\desktop\c code\week-07\temperature_logger\utility.h
+1511443489 c:\users\imre\desktop\c code\week-07\temperature_logger\utility.h
+	<string>
 
-1511432436 source:c:\users\imre\desktop\c code\week-07\temperature_logger\utility.cpp
+1511443500 source:c:\users\imre\desktop\c code\week-07\temperature_logger\utility.cpp
 	"Utility.h"
 	<iostream>
-	<thread>
-	<chrono>
-	<cstdlib>
+	<string>
+	<windows.h>
+	"Temperature.h"
 
-1511432376 source:c:\users\imre\desktop\c code\week-07\temperature_logger\temperature.cpp
+1511433063 source:c:\users\imre\desktop\c code\week-07\temperature_logger\temperature.cpp
 	"Temperature.h"
 	<vector>
 	<string>
