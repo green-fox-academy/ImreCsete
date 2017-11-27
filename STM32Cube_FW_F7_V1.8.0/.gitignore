@@ -1,0 +1,17 @@
+_htmresc/*
+
+Documentation/*
+
+Drivers/*
+
+Middlewares/*
+
+Utilities/*
+
+package.xml
+
+*.txt
+
+*.html
+Projects/*/*
+!GreenFox
