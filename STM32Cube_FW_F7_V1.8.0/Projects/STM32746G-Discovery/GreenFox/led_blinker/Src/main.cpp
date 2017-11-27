@@ -98,7 +98,10 @@ int main(void)
   while (1)
   {
 	  //TODO:
-	  //Flash the ledwith 200 ms period time
+	  //Flash the led with 200 ms period time
+	  BSP_LED_Toggle(LED_GREEN);
+
+	  HAL_Delay(200);
 
   }
 }
