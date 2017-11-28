@@ -93,7 +93,7 @@ int main(void)
   /* Add your application code here     */
 
   __HAL_RCC_GPIOF_CLK_ENABLE();
-  __HAL_RCC_GPIOA_CLK_ENABLE();// we need to enable the GPIOA port's clock first
+  __HAL_RCC_GPIOA_CLK_ENABLE();
 
   GPIO_InitTypeDef led0;            // create a config structure
   led0.Pin = GPIO_PIN_0;            // this is about PIN 0
@@ -127,58 +127,36 @@ int main(void)
 
   HAL_GPIO_Init(GPIOF, &led3);
 
+  GPIO_InitTypeDef button;            // create a config structure
+  button.Pin = GPIO_PIN_6;            // this is about PIN 6
+  button.Mode = GPIO_MODE_INPUT;  // Configure as input
+  button.Pull = GPIO_PULLUP;        // the push-up-down should work as pulldown
+  button.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
+
+  HAL_GPIO_Init(GPIOF, &button);
+
   /* Infinite loop */
   while (1)
   {
-	  //HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_10); // Non-RGB
-	  //HAL_Delay(1000);
 
-	  GPIOF->ODR = GPIOF->ODR | GPIO_PIN_9; // Red
-	  HAL_Delay(1000);
-	  GPIOF->ODR = GPIOF->ODR & 0;
-	  HAL_Delay(1000);
-	  GPIOF->ODR = GPIOF->ODR | GPIO_PIN_8; // Green
-	  HAL_Delay(1000);
-	  GPIOF->ODR = GPIOF->ODR & 0;
-	  HAL_Delay(1000);
-	  GPIOA->ODR = GPIOA->ODR | GPIO_PIN_0; // Blue
-	  HAL_Delay(1000);
-	  GPIOA->ODR = GPIOA->ODR & 0;
-	  HAL_Delay(1000);
-	  GPIOF->ODR = GPIOF->ODR | GPIO_PIN_9;
-	  GPIOF->ODR = GPIOF->ODR | GPIO_PIN_8;
-	  HAL_Delay(1000);
-	  GPIOF->ODR = GPIOF->ODR & 0;
-	  HAL_Delay(1000);
-	  GPIOF->ODR = GPIOF->ODR | GPIO_PIN_8;
-	  GPIOA->ODR = GPIOA->ODR | GPIO_PIN_0;
-	  HAL_Delay(1000);
-	  GPIOF->ODR = GPIOF->ODR & 0;
-	  GPIOA->ODR = GPIOA->ODR & 0;
-	  HAL_Delay(1000);
-	  GPIOF->ODR = GPIOF->ODR | GPIO_PIN_9;
-	  GPIOA->ODR = GPIOA->ODR | GPIO_PIN_0;
-	  HAL_Delay(1000);
-	  GPIOF->ODR = GPIOF->ODR & 0;
-	  GPIOA->ODR = GPIOA->ODR & 0;
-	  HAL_Delay(1000);
-	  GPIOF->ODR = GPIOF->ODR | GPIO_PIN_9;
-	  HAL_Delay(1000);
-	  GPIOF->ODR = GPIOF->ODR | GPIO_PIN_8;
-	  HAL_Delay(1000);
-	  GPIOA->ODR = GPIOA->ODR | GPIO_PIN_0;
-	  HAL_Delay(1000);
-	  GPIOF->ODR = GPIOF->ODR & 0;
-	  GPIOA->ODR = GPIOA->ODR & 0;
-	  HAL_Delay(1000);
-	  GPIOF->ODR = GPIOF->ODR | GPIO_PIN_9;
-	  GPIOF->ODR = GPIOF->ODR | GPIO_PIN_8;
-	  GPIOA->ODR = GPIOA->ODR | GPIO_PIN_0;
-	  HAL_Delay(1000);
-	  GPIOF->ODR = GPIOF->ODR & 0;
-	  GPIOA->ODR = GPIOA->ODR & 0;
-	  HAL_Delay(1000);
-
+	  if (HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_6) == 0) {
+		  HAL_Delay(1000);
+		  GPIOA->ODR = GPIOA->ODR | GPIO_PIN_0;
+		  HAL_Delay(1000);
+		  GPIOA->ODR = GPIOA->ODR & 0;
+		  HAL_Delay(1000);
+		  GPIOF->ODR = GPIOF->ODR | GPIO_PIN_10;
+		  HAL_Delay(1000);
+		  GPIOF->ODR = GPIOF->ODR & 0;
+		  HAL_Delay(1000);
+		  GPIOF->ODR = GPIOF->ODR | GPIO_PIN_9;
+		  HAL_Delay(1000);
+		  GPIOF->ODR = GPIOF->ODR & 0;
+		  HAL_Delay(1000);
+		  GPIOF->ODR = GPIOF->ODR | GPIO_PIN_8;
+		  HAL_Delay(1000);
+		  GPIOF->ODR = GPIOF->ODR & 0;
+	  }
   }
 }
 
