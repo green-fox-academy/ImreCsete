@@ -91,17 +91,98 @@ int main(void)
 
 
   /* Add your application code here     */
-  BSP_LED_Init(LED_GREEN);
-  BSP_LED_On(LED_GREEN);
+
+  __HAL_RCC_GPIOF_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();// we need to enable the GPIOA port's clock first
+
+  GPIO_InitTypeDef led0;            // create a config structure
+  led0.Pin = GPIO_PIN_0;            // this is about PIN 0
+  led0.Mode = GPIO_MODE_OUTPUT_PP;  // Configure as output with push-up-down enabled
+  led0.Pull = GPIO_PULLDOWN;        // the push-up-down should work as pulldown
+  led0.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
+
+  HAL_GPIO_Init(GPIOA, &led0);
+
+  GPIO_InitTypeDef led1;            // create a config structure
+  led1.Pin = GPIO_PIN_10;            // this is about PIN 1
+  led1.Mode = GPIO_MODE_OUTPUT_PP;  // Configure as output with push-up-down enabled
+  led1.Pull = GPIO_PULLDOWN;        // the push-up-down should work as pulldown
+  led1.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
+
+  HAL_GPIO_Init(GPIOF, &led1);
+
+  GPIO_InitTypeDef led2;            // create a config structure
+  led2.Pin = GPIO_PIN_9;            // this is about PIN 2
+  led2.Mode = GPIO_MODE_OUTPUT_PP;  // Configure as output with push-up-down enabled
+  led2.Pull = GPIO_PULLDOWN;        // the push-up-down should work as pulldown
+  led2.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
+
+  HAL_GPIO_Init(GPIOF, &led2);
+
+  GPIO_InitTypeDef led3;            // create a config structure
+  led3.Pin = GPIO_PIN_8;            // this is about PIN 3
+  led3.Mode = GPIO_MODE_OUTPUT_PP;  // Configure as output with push-up-down enabled
+  led3.Pull = GPIO_PULLDOWN;        // the push-up-down should work as pulldown
+  led3.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
+
+  HAL_GPIO_Init(GPIOF, &led3);
 
   /* Infinite loop */
   while (1)
   {
 	  //TODO:
 	  //Flash the led with 200 ms period time
-	  BSP_LED_Toggle(LED_GREEN);
 
-	  HAL_Delay(200);
+	  //HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_10);
+	  //HAL_Delay(1000);
+	  HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_9); // Red
+	  HAL_Delay(1000);
+	  HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_9);
+	  HAL_Delay(1000);
+	  HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_8); // Green
+	  HAL_Delay(1000);
+	  HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_8);
+	  HAL_Delay(1000);
+	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0); // Blue
+	  HAL_Delay(1000);
+	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
+	  HAL_Delay(1000);
+	  HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_9);
+	  HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_8);
+	  HAL_Delay(1000);
+	  HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_9);
+	  HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_8);
+	  HAL_Delay(1000);
+	  HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_8);
+	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
+	  HAL_Delay(1000);
+	  HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_8);
+	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
+	  HAL_Delay(1000);
+	  HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_9);
+	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
+	  HAL_Delay(1000);
+	  HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_9);
+	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
+	  HAL_Delay(1000);
+	  HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_9);
+	  HAL_Delay(1000);
+	  HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_8);
+	  HAL_Delay(1000);
+	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
+	  HAL_Delay(1000);
+	  HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_9);
+	  HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_8);
+	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
+	  HAL_Delay(1000);
+	  HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_9);
+	  HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_8);
+	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
+	  HAL_Delay(1000);
+	  HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_9);
+	  HAL_GPIO_TogglePin(GPIOF, GPIO_PIN_8);
+	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_0);
+	  HAL_Delay(1000);
 
   }
 }
