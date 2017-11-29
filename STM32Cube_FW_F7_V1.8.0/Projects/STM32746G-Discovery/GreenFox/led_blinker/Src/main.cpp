@@ -63,6 +63,13 @@ static void CPU_CACHE_Enable(void);
   * @param  None
   * @retval None
   */
+
+void LED_turn_ON();
+void LED_turn_OFF();
+void LED_flash(uint32_t delay_time);
+void button_counter(uint32_t delay_time);
+int counter = 0;
+
 int main(void)
 {
 
@@ -104,7 +111,7 @@ int main(void)
   HAL_GPIO_Init(GPIOA, &led0);
 
   GPIO_InitTypeDef led1;            // create a config structure
-  led1.Pin = GPIO_PIN_10;            // this is about PIN 1
+  led1.Pin = GPIO_PIN_10;           // this is about PIN 1
   led1.Mode = GPIO_MODE_OUTPUT_PP;  // Configure as output with push-up-down enabled
   led1.Pull = GPIO_PULLDOWN;        // the push-up-down should work as pulldown
   led1.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
@@ -112,7 +119,7 @@ int main(void)
   HAL_GPIO_Init(GPIOF, &led1);
 
   GPIO_InitTypeDef led2;            // create a config structure
-  led2.Pin = GPIO_PIN_9;            // this is about PIN 2
+  led2.Pin = GPIO_PIN_9;            // this is about PIN 9
   led2.Mode = GPIO_MODE_OUTPUT_PP;  // Configure as output with push-up-down enabled
   led2.Pull = GPIO_PULLDOWN;        // the push-up-down should work as pulldown
   led2.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
@@ -120,44 +127,85 @@ int main(void)
   HAL_GPIO_Init(GPIOF, &led2);
 
   GPIO_InitTypeDef led3;            // create a config structure
-  led3.Pin = GPIO_PIN_8;            // this is about PIN 3
+  led3.Pin = GPIO_PIN_8;            // this is about PIN 8
   led3.Mode = GPIO_MODE_OUTPUT_PP;  // Configure as output with push-up-down enabled
   led3.Pull = GPIO_PULLDOWN;        // the push-up-down should work as pulldown
   led3.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
 
   HAL_GPIO_Init(GPIOF, &led3);
 
+  GPIO_InitTypeDef led4;            // create a config structure
+  led4.Pin = GPIO_PIN_7;            // this is about PIN 7
+  led4.Mode = GPIO_MODE_OUTPUT_PP;  // Configure as output with push-up-down enabled
+  led4.Pull = GPIO_PULLDOWN;        // the push-up-down should work as pulldown
+  led4.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
+
+  HAL_GPIO_Init(GPIOF, &led4);
+
   GPIO_InitTypeDef button;            // create a config structure
   button.Pin = GPIO_PIN_6;            // this is about PIN 6
-  button.Mode = GPIO_MODE_INPUT;  // Configure as input
+  button.Mode = GPIO_MODE_INPUT;  	// Configure as output with push-up-down enabled
   button.Pull = GPIO_PULLUP;        // the push-up-down should work as pulldown
   button.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
 
   HAL_GPIO_Init(GPIOF, &button);
 
   /* Infinite loop */
+
+  uint32_t timer = 100;
+
   while (1)
   {
+	  button_counter(90);
 
-	  if (HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_6) == 0) {
-		  HAL_Delay(1000);
-		  GPIOA->ODR = GPIOA->ODR | GPIO_PIN_0;
-		  HAL_Delay(1000);
-		  GPIOA->ODR = GPIOA->ODR & 0;
-		  HAL_Delay(1000);
-		  GPIOF->ODR = GPIOF->ODR | GPIO_PIN_10;
-		  HAL_Delay(1000);
-		  GPIOF->ODR = GPIOF->ODR & 0;
-		  HAL_Delay(1000);
-		  GPIOF->ODR = GPIOF->ODR | GPIO_PIN_9;
-		  HAL_Delay(1000);
-		  GPIOF->ODR = GPIOF->ODR & 0;
-		  HAL_Delay(1000);
-		  GPIOF->ODR = GPIOF->ODR | GPIO_PIN_8;
-		  HAL_Delay(1000);
-		  GPIOF->ODR = GPIOF->ODR & 0;
-	  }
+	  switch(counter)
+	{ case 1:
+		 LED_turn_ON();
+		 break;
+	  case 2:
+		  LED_flash(200);
+		  break;
+	  case 3:
+		  LED_turn_OFF();
+		  counter = 0;
+		  break;
+	  default:
+		  counter = 0;
+	 }
   }
+}
+
+void LED_turn_ON()
+{
+	GPIOA->ODR = GPIOA->ODR | GPIO_PIN_0;
+	GPIOF->ODR = GPIOF->ODR | GPIO_PIN_10;
+	GPIOF->ODR = GPIOF->ODR | GPIO_PIN_9;
+	GPIOF->ODR = GPIOF->ODR | GPIO_PIN_8;
+	GPIOF->ODR = GPIOF->ODR | GPIO_PIN_7;
+}
+
+void LED_turn_OFF()
+{
+	GPIOF->ODR = GPIOF->ODR & 0;
+	GPIOA->ODR = GPIOA->ODR & 0;
+}
+
+void LED_flash(uint32_t delay_time)
+{
+	LED_turn_ON();
+	HAL_Delay(delay_time);
+	LED_turn_OFF();
+	HAL_Delay(delay_time);
+}
+
+void button_counter(uint32_t delay_time)
+{
+	while (HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_6) == 0) {
+			  HAL_Delay(delay_time);
+			  if (HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_6) == 0) {
+		  		  counter++;
+			  }
+		  }
 }
 
 /**
