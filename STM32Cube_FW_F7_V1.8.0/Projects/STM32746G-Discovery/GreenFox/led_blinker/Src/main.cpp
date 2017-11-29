@@ -64,11 +64,10 @@ static void CPU_CACHE_Enable(void);
   * @retval None
   */
 
-void LED_turn_ON();
-void LED_turn_OFF();
-void LED_flash(uint32_t delay_time);
+void LED_chase_left(uint32_t delay_time);
+void LED_chase_right(uint32_t delay_time);
 void button_counter(uint32_t delay_time);
-int counter = 0;
+uint32_t counter = 0;
 
 int main(void)
 {
@@ -152,55 +151,75 @@ int main(void)
 
   /* Infinite loop */
 
-  uint32_t timer = 100;
-
   while (1)
   {
-	  button_counter(90);
+	 button_counter(50);
 
-	  switch(counter)
-	{ case 1:
-		 LED_turn_ON();
-		 break;
-	  case 2:
-		  LED_flash(200);
-		  break;
-	  case 3:
-		  LED_turn_OFF();
-		  counter = 0;
-		  break;
-	  default:
-		  counter = 0;
+	 switch (counter) {
+	 case 1:
+		LED_chase_left(100);
+		break;
+	 case 2:
+	 	LED_chase_right(100);
+	 	break;
+	 default:
+		counter = 0;
+		break;
 	 }
   }
 }
 
-void LED_turn_ON()
+void LED_chase_left(uint32_t delay_time)
 {
-	GPIOA->ODR = GPIOA->ODR | GPIO_PIN_0;
-	GPIOF->ODR = GPIOF->ODR | GPIO_PIN_10;
-	GPIOF->ODR = GPIOF->ODR | GPIO_PIN_9;
-	GPIOF->ODR = GPIOF->ODR | GPIO_PIN_8;
-	GPIOF->ODR = GPIOF->ODR | GPIO_PIN_7;
-}
-
-void LED_turn_OFF()
-{
-	GPIOF->ODR = GPIOF->ODR & 0;
-	GPIOA->ODR = GPIOA->ODR & 0;
-}
-
-void LED_flash(uint32_t delay_time)
-{
-	LED_turn_ON();
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
 	HAL_Delay(delay_time);
-	LED_turn_OFF();
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_SET);
+	HAL_Delay(delay_time);
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_9, GPIO_PIN_SET);
+	HAL_Delay(delay_time);
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_8, GPIO_PIN_SET);
+	HAL_Delay(delay_time);
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_7, GPIO_PIN_SET);
+	HAL_Delay(delay_time);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
+	HAL_Delay(delay_time);
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_RESET);
+	HAL_Delay(delay_time);
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_9, GPIO_PIN_RESET);
+	HAL_Delay(delay_time);
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_8, GPIO_PIN_RESET);
+	HAL_Delay(delay_time);
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_7, GPIO_PIN_RESET);
+	HAL_Delay(delay_time);
+}
+
+void LED_chase_right(uint32_t delay_time)
+{
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_7, GPIO_PIN_SET);
+	HAL_Delay(delay_time);
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_8, GPIO_PIN_SET);
+	HAL_Delay(delay_time);
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_9, GPIO_PIN_SET);
+	HAL_Delay(delay_time);
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_SET);
+	HAL_Delay(delay_time);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
+	HAL_Delay(delay_time);
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_7, GPIO_PIN_RESET);
+	HAL_Delay(delay_time);
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_8, GPIO_PIN_RESET);
+	HAL_Delay(delay_time);
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_9, GPIO_PIN_RESET);
+	HAL_Delay(delay_time);
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_RESET);
+	HAL_Delay(delay_time);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
 	HAL_Delay(delay_time);
 }
 
 void button_counter(uint32_t delay_time)
 {
-	while (HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_6) == 0) {
+	if (HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_6) == 0) {
 			  HAL_Delay(delay_time);
 			  if (HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_6) == 0) {
 		  		  counter++;
