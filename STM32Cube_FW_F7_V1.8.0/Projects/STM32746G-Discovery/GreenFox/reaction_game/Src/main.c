@@ -77,6 +77,7 @@ static void CPU_CACHE_Enable(void);
   */
 
 void greet_message();
+uint32_t timer();
 
 int main(void)
 {
@@ -128,23 +129,42 @@ int main(void)
 
   while (1)
   {
-	  uint32_t random_number = (HAL_RNG_GetRandomNumber(&rngCfg) % 10000);
+	if (BSP_PB_GetState(BUTTON_KEY) == 1) {
+		printf("\nThe game is afoot!\n\n");
+			while(1) {
+				uint32_t random_number = (HAL_RNG_GetRandomNumber(&rngCfg) % 10000);
 
-	  HAL_Delay(random_number);
+				HAL_Delay(random_number);
 
-	  BSP_LED_Toggle(LED_GREEN);
+				BSP_LED_On(LED_GREEN);
 
-	  HAL_Delay(random_number);
+				printf("Your reaction was: %lu milliseconds\n", timer());
+			}
+	}
   }
 }
+
+
 
 void greet_message()
 {
   printf("\n------------------WELCOME------------------\r\n"
 		 "**********in STATIC reaction game**********\r\n\n"
-		 "When the green LED lights up, hit the button!\n"
-		 "The game will measure your reaction time.\n\n"
+		 "The game will measure your reaction time.\n"
+		 "Hit the button when you are ready to start!\n"
+		 "When the green LED lights up, hit the button again!\n\n"
 		 "Have fun!\n");
+}
+
+uint32_t timer()
+{
+	uint32_t tickstart = HAL_GetTick();
+	while(BSP_PB_GetState(BUTTON_KEY) == 0)
+	{
+	}
+	uint32_t result = HAL_GetTick() - tickstart;
+	BSP_LED_Off(LED_GREEN);
+	return result;
 }
 
 /**
