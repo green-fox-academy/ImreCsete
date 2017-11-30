@@ -77,8 +77,13 @@ static void CPU_CACHE_Enable(void);
   */
 
 void greet_message();
+void game_start();
+void game_over();
 uint32_t timer();
 void LEDs_on();
+void HP_loss();
+uint32_t health_points = 5;
+uint32_t upper_limit = 250;
 
 int main(void)
 {
@@ -124,44 +129,12 @@ int main(void)
   __HAL_RCC_GPIOF_CLK_ENABLE();
 
   GPIO_InitTypeDef hp5;            // create a config structure
-  hp5.Pin = GPIO_PIN_10;            // this is about PIN 10
+  hp5.Pin = GPIO_PIN_10 | GPIO_PIN_9 | GPIO_PIN_8 | GPIO_PIN_7 | GPIO_PIN_6;            // this is about PIN 10
   hp5.Mode = GPIO_MODE_OUTPUT_PP;  // Configure as output with push-up-down enabled
   hp5.Pull = GPIO_PULLDOWN;        // the push-up-down should work as pulldown
   hp5.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
 
   HAL_GPIO_Init(GPIOF, &hp5);
-
-  GPIO_InitTypeDef hp4;            // create a config structure
-  hp4.Pin = GPIO_PIN_9;           // this is about PIN 9
-  hp4.Mode = GPIO_MODE_OUTPUT_PP;  // Configure as output with push-up-down enabled
-  hp4.Pull = GPIO_PULLDOWN;        // the push-up-down should work as pulldown
-  hp4.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
-
-  HAL_GPIO_Init(GPIOF, &hp4);
-
-  GPIO_InitTypeDef hp3;            // create a config structure
-  hp3.Pin = GPIO_PIN_8;            // this is about PIN 8
-  hp3.Mode = GPIO_MODE_OUTPUT_PP;  // Configure as output with push-up-down enabled
-  hp3.Pull = GPIO_PULLDOWN;        // the push-up-down should work as pulldown
-  hp3.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
-
-  HAL_GPIO_Init(GPIOF, &hp3);
-
-  GPIO_InitTypeDef hp2;            // create a config structure
-  hp2.Pin = GPIO_PIN_7;            // this is about PIN 7
-  hp2.Mode = GPIO_MODE_OUTPUT_PP;  // Configure as output with push-up-down enabled
-  hp2.Pull = GPIO_PULLDOWN;        // the push-up-down should work as pulldown
-  hp2.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
-
-  HAL_GPIO_Init(GPIOF, &hp2);
-
-  GPIO_InitTypeDef hp1;            // create a config structure
-  hp1.Pin = GPIO_PIN_6;            // this is about PIN 6
-  hp1.Mode = GPIO_MODE_OUTPUT_PP;  // Configure as output with push-up-down enabled
-  hp1.Pull = GPIO_PULLDOWN;        // the push-up-down should work as pulldown
-  hp1.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
-
-  HAL_GPIO_Init(GPIOF, &hp1);
 
   RNG_HandleTypeDef rngCfg;
   rngCfg.Instance = RNG;
@@ -173,31 +146,65 @@ int main(void)
 
   while (1)
   {
-	if (BSP_PB_GetState(BUTTON_KEY) == 1) {
+	game_start();
+
+	while (BSP_PB_GetState(BUTTON_KEY) != 0) {
 		printf("\nThe game is afoot!\n\n");
 		LEDs_on();
 
-		while(1) {
+		while(health_points > 0) {
 			uint32_t random_number = (HAL_RNG_GetRandomNumber(&rngCfg) % 10000);
 
 			HAL_Delay(random_number);
 			BSP_LED_On(LED_GREEN);
-			printf("Your reaction was: %lu milliseconds\n", timer());
+			uint32_t result = timer();
+
+			printf("Your reaction was: %lu milliseconds\n", result);
+
+			if (result > upper_limit) {
+				HP_loss();
+			}
 		}
+	game_over();
 	}
   }
+
 }
-
-
 
 void greet_message()
 {
   printf("\n------------------WELCOME------------------\r\n"
 		 "**********in STATIC reaction game**********\r\n\n"
 		 "The game will measure your reaction time.\n"
+		 "You have 5 health points.\n"
+		 "Each time your reaction is above %lu milliseconds, you lose one.\n"
 		 "Hit the button when you are ready to start!\n"
 		 "When the green LED lights up, hit the button again!\n\n"
-		 "Have fun!\n");
+		 "Have fun!\n", upper_limit);
+}
+
+void game_start()
+{
+	uint32_t tickstart = HAL_GetTick();
+
+	if (tickstart % 1000 == 0) {
+		BSP_LED_On(LED_GREEN);
+	}
+	if (tickstart % 2000 == 0) {
+			BSP_LED_Off(LED_GREEN);
+			tickstart = 0;
+	}
+}
+
+void game_over()
+{
+	if (health_points == 0) {
+		printf("Game Over!\nPress the button to start over!\n\n");
+		}
+
+	while(BSP_PB_GetState(BUTTON_KEY) == 0)
+		{
+		}
 }
 
 uint32_t timer()
@@ -218,6 +225,30 @@ void LEDs_on()
 	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_8, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_7, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_SET);
+	BSP_LED_On(LED_GREEN);
+	BSP_LED_Off(LED_GREEN);
+	health_points = 5;
+}
+
+void HP_loss()
+{
+	health_points--;
+	printf("You have %lu health points left!\n", health_points);
+	if (health_points == 4) {
+		HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_RESET);
+	}
+	if (health_points == 3) {
+			HAL_GPIO_WritePin(GPIOF, GPIO_PIN_9, GPIO_PIN_RESET);
+		}
+	if (health_points == 2) {
+			HAL_GPIO_WritePin(GPIOF, GPIO_PIN_8, GPIO_PIN_RESET);
+		}
+	if (health_points == 1) {
+			HAL_GPIO_WritePin(GPIOF, GPIO_PIN_7, GPIO_PIN_RESET);
+		}
+	if (health_points == 0) {
+				HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_RESET);
+		}
 }
 
 /**
