@@ -78,6 +78,7 @@ static void CPU_CACHE_Enable(void);
 
 void greet_message();
 uint32_t timer();
+void LEDs_on();
 
 int main(void)
 {
@@ -106,7 +107,8 @@ int main(void)
 
 
   /* Add your application code here
-     */
+  */
+
   BSP_LED_Init(LED_GREEN);
   BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_GPIO);
 
@@ -118,6 +120,48 @@ int main(void)
   uart_handle.Init.Mode       = UART_MODE_TX_RX;
 
   BSP_COM_Init(COM1, &uart_handle);
+
+  __HAL_RCC_GPIOF_CLK_ENABLE();
+
+  GPIO_InitTypeDef hp5;            // create a config structure
+  hp5.Pin = GPIO_PIN_10;            // this is about PIN 10
+  hp5.Mode = GPIO_MODE_OUTPUT_PP;  // Configure as output with push-up-down enabled
+  hp5.Pull = GPIO_PULLDOWN;        // the push-up-down should work as pulldown
+  hp5.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
+
+  HAL_GPIO_Init(GPIOF, &hp5);
+
+  GPIO_InitTypeDef hp4;            // create a config structure
+  hp4.Pin = GPIO_PIN_9;           // this is about PIN 9
+  hp4.Mode = GPIO_MODE_OUTPUT_PP;  // Configure as output with push-up-down enabled
+  hp4.Pull = GPIO_PULLDOWN;        // the push-up-down should work as pulldown
+  hp4.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
+
+  HAL_GPIO_Init(GPIOF, &hp4);
+
+  GPIO_InitTypeDef hp3;            // create a config structure
+  hp3.Pin = GPIO_PIN_8;            // this is about PIN 8
+  hp3.Mode = GPIO_MODE_OUTPUT_PP;  // Configure as output with push-up-down enabled
+  hp3.Pull = GPIO_PULLDOWN;        // the push-up-down should work as pulldown
+  hp3.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
+
+  HAL_GPIO_Init(GPIOF, &hp3);
+
+  GPIO_InitTypeDef hp2;            // create a config structure
+  hp2.Pin = GPIO_PIN_7;            // this is about PIN 7
+  hp2.Mode = GPIO_MODE_OUTPUT_PP;  // Configure as output with push-up-down enabled
+  hp2.Pull = GPIO_PULLDOWN;        // the push-up-down should work as pulldown
+  hp2.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
+
+  HAL_GPIO_Init(GPIOF, &hp2);
+
+  GPIO_InitTypeDef hp1;            // create a config structure
+  hp1.Pin = GPIO_PIN_6;            // this is about PIN 6
+  hp1.Mode = GPIO_MODE_OUTPUT_PP;  // Configure as output with push-up-down enabled
+  hp1.Pull = GPIO_PULLDOWN;        // the push-up-down should work as pulldown
+  hp1.Speed = GPIO_SPEED_HIGH;     // we need a high-speed output
+
+  HAL_GPIO_Init(GPIOF, &hp1);
 
   RNG_HandleTypeDef rngCfg;
   rngCfg.Instance = RNG;
@@ -131,15 +175,15 @@ int main(void)
   {
 	if (BSP_PB_GetState(BUTTON_KEY) == 1) {
 		printf("\nThe game is afoot!\n\n");
-			while(1) {
-				uint32_t random_number = (HAL_RNG_GetRandomNumber(&rngCfg) % 10000);
+		LEDs_on();
 
-				HAL_Delay(random_number);
+		while(1) {
+			uint32_t random_number = (HAL_RNG_GetRandomNumber(&rngCfg) % 10000);
 
-				BSP_LED_On(LED_GREEN);
-
-				printf("Your reaction was: %lu milliseconds\n", timer());
-			}
+			HAL_Delay(random_number);
+			BSP_LED_On(LED_GREEN);
+			printf("Your reaction was: %lu milliseconds\n", timer());
+		}
 	}
   }
 }
@@ -165,6 +209,15 @@ uint32_t timer()
 	uint32_t result = HAL_GetTick() - tickstart;
 	BSP_LED_Off(LED_GREEN);
 	return result;
+}
+
+void LEDs_on()
+{
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_9, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_8, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_7, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_SET);
 }
 
 /**
