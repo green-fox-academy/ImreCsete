@@ -75,6 +75,9 @@ static void CPU_CACHE_Enable(void);
   * @param  None
   * @retval None
   */
+
+void greet_message();
+
 int main(void)
 {
   /* This project template calls firstly two functions in order to configure MPU feature 
@@ -106,7 +109,7 @@ int main(void)
   BSP_LED_Init(LED_GREEN);
   BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_GPIO);
 
-  uart_handle.Init.BaudRate   = 115200;
+  uart_handle.Init.BaudRate   = 9600;
   uart_handle.Init.WordLength = UART_WORDLENGTH_8B;
   uart_handle.Init.StopBits   = UART_STOPBITS_1;
   uart_handle.Init.Parity     = UART_PARITY_NONE;
@@ -115,18 +118,35 @@ int main(void)
 
   BSP_COM_Init(COM1, &uart_handle);
 
+  RNG_HandleTypeDef rngCfg;
+  rngCfg.Instance = RNG;
+  HAL_RNG_Init(&rngCfg);
+
   /* Output a message using printf function */
-  printf("\n------------------WELCOME------------------\r\n");
-  printf("**********in STATIC reaction game**********\r\n\n");
+
+  greet_message();
 
   while (1)
   {
-	  RNG_HandleTypeDef rngCfg;
-	  rngCfg.Instance = RNG;
-	  HAL_RNG_Init(&rngCfg);
-	  uint32_t random_number = HAL_RNG_GetRandomNumber(&rngCfg);
+	  uint32_t random_number = (HAL_RNG_GetRandomNumber(&rngCfg) % 10000);
+
+	  HAL_Delay(random_number);
+
+	  BSP_LED_Toggle(LED_GREEN);
+
+	  HAL_Delay(random_number);
   }
 }
+
+void greet_message()
+{
+  printf("\n------------------WELCOME------------------\r\n"
+		 "**********in STATIC reaction game**********\r\n\n"
+		 "When the green LED lights up, hit the button!\n"
+		 "The game will measure your reaction time.\n\n"
+		 "Have fun!\n");
+}
+
 /**
   * @brief  Retargets the C library printf function to the USART.
   * @param  None
