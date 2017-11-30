@@ -121,7 +121,10 @@ int main(void)
 
   while (1)
   {
-
+	  RNG_HandleTypeDef rngCfg;
+	  rngCfg.Instance = RNG;
+	  HAL_RNG_Init(&rngCfg);
+	  uint32_t random_number = HAL_RNG_GetRandomNumber(&rngCfg);
   }
 }
 /**
