@@ -39,7 +39,6 @@
 #include "main.h"
 #include <string.h>
 
-
 /** @addtogroup STM32F7xx_HAL_Examples
   * @{
   */
@@ -78,12 +77,15 @@ static void CPU_CACHE_Enable(void);
 
 void greet_message();
 void game_start();
-void game_over();
+void game_over(uint32_t hp, uint32_t round);
 uint32_t timer();
 void LEDs_on();
-void HP_loss();
+void HP_status(uint32_t hp, uint32_t reaction, uint32_t round);
 uint32_t health_points = 5;
 uint32_t upper_limit = 250;
+uint32_t round_count = 0;
+uint32_t reaction_record[50];
+
 
 int main(void)
 {
@@ -149,7 +151,7 @@ int main(void)
 	game_start();
 
 	while (BSP_PB_GetState(BUTTON_KEY) != 0) {
-		printf("\nThe game is afoot!\n\n");
+		printf("\nThe game is afoot!\n\nRound %lu!\n", round_count + 1);
 		LEDs_on();
 
 		while(health_points > 0) {
@@ -158,14 +160,12 @@ int main(void)
 			HAL_Delay(random_number);
 			BSP_LED_On(LED_GREEN);
 			uint32_t result = timer();
-
+			round_count++;
 			printf("Your reaction was: %lu milliseconds\n", result);
-
-			if (result > upper_limit) {
-				HP_loss();
-			}
+			reaction_record[round_count] = result;
+			HP_status(health_points, result, round_count);
 		}
-	game_over();
+		game_over(health_points, round_count);
 	}
   }
 
@@ -196,10 +196,41 @@ void game_start()
 	}
 }
 
-void game_over()
+void game_over(uint32_t hp, uint32_t round)
 {
-	if (health_points == 0) {
-		printf("Game Over!\nPress the button to start over!\n\n");
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_RESET);
+	printf("\nYour statistics are: \n\n");
+				for (uint32_t f = 1; f <= round; f++) {
+					printf("%lu ms, ", (uint32_t)reaction_record[f]);
+				}
+
+	uint32_t best = 0;
+
+	for (uint32_t j = 0; j < round - 1; j++) {
+		for (uint32_t i = 0; i < round - j - 1; i++) {
+			if (reaction_record[i] > reaction_record[i + 1]) {
+				uint32_t temp = reaction_record[i];
+				reaction_record[i] = reaction_record[i + 1];
+				reaction_record[i + 1] = temp;
+			}
+		}
+	}
+
+	best = reaction_record[1];
+
+	uint32_t sum = 0;
+	uint32_t average = 0;
+
+	for(uint32_t i = 0; i < round; i++) {
+		sum = sum + reaction_record[i];
+	}
+
+	average = sum / round;
+
+	printf("\n\nYour best time was: %lu ms\nYour average was: %lu ms\n", best, average);
+
+	if (hp == 0) {
+		printf("\nGame Over!\n\nPress the button to start over!\n\n");
 		}
 
 	while(BSP_PB_GetState(BUTTON_KEY) == 0)
@@ -230,25 +261,39 @@ void LEDs_on()
 	health_points = 5;
 }
 
-void HP_loss()
+void HP_status(uint32_t hp, uint32_t reaction, uint32_t round)
 {
-	health_points--;
-	printf("You have %lu health points left!\n", health_points);
-	if (health_points == 4) {
-		HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_RESET);
+	if (reaction > upper_limit) {
+		health_points--;
+		printf("You have %lu health points left!\n", health_points);
 	}
-	if (health_points == 3) {
+
+	hp = health_points;
+
+	switch(hp) {
+	case 4:
+		HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_RESET);
+		printf("Round %lu!\n", round + 1);
+		break;
+	case 3:
 			HAL_GPIO_WritePin(GPIOF, GPIO_PIN_9, GPIO_PIN_RESET);
-		}
-	if (health_points == 2) {
+			printf("Round %lu!\n", round + 1);
+		break;
+	case 2:
 			HAL_GPIO_WritePin(GPIOF, GPIO_PIN_8, GPIO_PIN_RESET);
-		}
-	if (health_points == 1) {
+			printf("Round %lu!\n", round + 1);
+		break;
+	case 1:
 			HAL_GPIO_WritePin(GPIOF, GPIO_PIN_7, GPIO_PIN_RESET);
-		}
-	if (health_points == 0) {
-				HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_RESET);
-		}
+			printf("Round %lu!\n", round + 1);
+		break;
+	case 0:
+			HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_RESET);
+		break;
+	default:
+	printf("Round %lu!\n", round + 1);
+	break;
+	}
 }
 
 /**
