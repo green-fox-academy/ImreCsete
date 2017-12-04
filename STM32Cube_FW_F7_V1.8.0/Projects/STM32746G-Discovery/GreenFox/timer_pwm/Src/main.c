@@ -113,6 +113,8 @@ int main(void)
 
   BSP_COM_Init(COM1, &uart_handle);
 
+  __HAL_RCC_TIM1_IS_CLK_ENABLED();
+
   TIM_HandleTypeDef    TimHandle;           //the timer's config structure
 
   TimHandle.Instance               = TIM1;
@@ -120,8 +122,6 @@ int main(void)
   TimHandle.Init.Prescaler         = 1;
   TimHandle.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
   TimHandle.Init.CounterMode       = TIM_COUNTERMODE_UP;
-
-  HAL_TIM_Base_Init(&TimHandle);
 
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
