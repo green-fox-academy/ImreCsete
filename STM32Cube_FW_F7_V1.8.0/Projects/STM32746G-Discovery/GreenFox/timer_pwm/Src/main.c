@@ -113,7 +113,7 @@ int main(void)
 
   BSP_COM_Init(COM1, &uart_handle);
 
-  __HAL_RCC_TIM1_IS_CLK_ENABLED();
+  __HAL_RCC_TIM1_CLK_ENABLE();
 
   TIM_HandleTypeDef    TimHandle;           //the timer's config structure
 
