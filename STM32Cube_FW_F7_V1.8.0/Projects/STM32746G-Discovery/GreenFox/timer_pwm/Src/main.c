@@ -121,6 +121,8 @@ int main(void)
   TimHandle.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
   TimHandle.Init.CounterMode       = TIM_COUNTERMODE_UP;
 
+  HAL_TIM_Base_Init(&TimHandle);
+
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
   GPIO_InitTypeDef led0;
@@ -143,9 +145,10 @@ int main(void)
   printf("\n-----------------WELCOME-----------------\r\n");
   printf("**********in STATIC timer & pwm WS**********\r\n\n");
 
-	  while (1)
-	  {
-	  }
+  while(1)
+  {
+
+  }
 }
 
 /**
