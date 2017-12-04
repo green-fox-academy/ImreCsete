@@ -122,6 +122,7 @@ int main(void)
   TimHandle.Init.Prescaler         = 1;
   TimHandle.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
   TimHandle.Init.CounterMode       = TIM_COUNTERMODE_UP;
+  TimHandle.Init.RepetitionCounter = 0;
 
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
@@ -130,8 +131,19 @@ int main(void)
   led0.Mode = GPIO_MODE_OUTPUT_PP;
   led0.Pull = GPIO_PULLDOWN;
   led0.Speed = GPIO_SPEED_HIGH;
+  led0.Alternate = GPIO_AF1_TIM1;
 
-  HAL_GPIO_Init(GPIOF, &led0);
+  HAL_GPIO_Init(GPIOA, &led0);
+
+  __HAL_RCC_GPIOF_CLK_ENABLE();
+
+  GPIO_InitTypeDef led1;
+  led1.Pin = GPIO_PIN_10;
+  led1.Mode = GPIO_MODE_OUTPUT_PP;
+  led1.Pull = GPIO_PULLDOWN;
+  led1.Speed = GPIO_SPEED_HIGH;
+
+  HAL_GPIO_Init(GPIOF, &led1);
 
   HAL_TIM_Base_Init(&TimHandle);            //Configure the timer
 
@@ -147,7 +159,17 @@ int main(void)
 
   while(1)
   {
+	  uint32_t timer = __HAL_TIM_GET_COUNTER(&TimHandle);
 
+	  HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_SET);
+
+	  if (timer == 800) {
+		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
+	  }
+
+	  if (timer == 200) {
+	  		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
+	  	  }
   }
 }
 
