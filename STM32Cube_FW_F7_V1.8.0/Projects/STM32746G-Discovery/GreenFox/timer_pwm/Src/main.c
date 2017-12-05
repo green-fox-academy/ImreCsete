@@ -127,7 +127,7 @@ int main(void)
 
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
-  led0.Pin = GPIO_PIN_0;
+  led0.Pin = GPIO_PIN_8;
   led0.Mode = GPIO_MODE_AF_PP;
   led0.Speed = GPIO_SPEED_HIGH;
   led0.Alternate = GPIO_AF1_TIM1;
@@ -166,15 +166,21 @@ int main(void)
 
   while(1)
   {
-	  /*uint32_t timer = __HAL_TIM_GET_COUNTER(&TimHandle);
+	  uint32_t timer = __HAL_TIM_GET_COUNTER(&TimHandle);
 
-	  if (timer == 400) {
-		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
+	  if (TIM1->CNT < 500) {
+	 		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+	 	  } else {
+	 		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
+	 	  }
+
+	  /* if (timer > 400) {
+		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
 	  } if (timer == 1000) {
-		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
+		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
 	  }*/
 
-	 if (TIM1->CNT < 500) {
+	 if (timer < 500) {
 	 	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_SET);
 	 } else {
 		 HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_RESET);
