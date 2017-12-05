@@ -120,10 +120,10 @@ int main(void)
 
   TimHandle.Instance               = TIM1;
   TimHandle.Init.Period            = 1000;
-  TimHandle.Init.Prescaler         = 54000;
+  TimHandle.Init.Prescaler         = 1;
   TimHandle.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
   TimHandle.Init.CounterMode       = TIM_COUNTERMODE_UP;
-  TimHandle.Init.RepetitionCounter = 0;
+  //TimHandle.Init.RepetitionCounter = 0;
 
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
@@ -151,6 +151,7 @@ int main(void)
   HAL_TIM_PWM_Init(&TimHandle);
 
   sConfig.OCMode = TIM_OCMODE_PWM1;
+  sConfig.Pulse = 100;
 
   HAL_TIM_PWM_ConfigChannel(&TimHandle, &sConfig, TIM_CHANNEL_1);
 
@@ -164,27 +165,17 @@ int main(void)
   printf("\n-----------------WELCOME-----------------\r\n");
   printf("**********in STATIC timer & pwm WS**********\r\n\n");
 
+  HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_SET);
+
   while(1)
   {
-	  uint32_t timer = __HAL_TIM_GET_COUNTER(&TimHandle);
+	  /*uint32_t timer = __HAL_TIM_GET_COUNTER(&TimHandle); // - blink function
 
-	  if (TIM1->CNT < 500) {
-	 		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
-	 	  } else {
-	 		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
-	 	  }
-
-	  /* if (timer > 400) {
-		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
-	  } if (timer == 1000) {
-		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
-	  }*/
-
-	 if (timer < 500) {
+	 if (timer < 1000) {
 	 	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_SET);
 	 } else {
 		 HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_RESET);
-	 }
+	 }*/
   }
 }
 
