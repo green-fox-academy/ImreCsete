@@ -54,6 +54,7 @@
 UART_HandleTypeDef uart_handle;
 GPIO_InitTypeDef led0;
 GPIO_InitTypeDef led1;
+GPIO_InitTypeDef button;
 TIM_HandleTypeDef TimHandle;
 TIM_OC_InitTypeDef sConfig;
 
@@ -81,6 +82,10 @@ static void CPU_CACHE_Enable(void);
  * @param  None
  * @retval None
  */
+
+void EXTI9_5_IRQHandler();
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
+
 int main(void) {
 	/* This project template calls firstly two functions in order to configure MPU feature
 	 and to enable the CPU Cache, respectively MPU_Config() and CPU_CACHE_Enable().
@@ -105,7 +110,7 @@ int main(void) {
 	/* Configure the System clock to have a frequency of 216 MHz */
 	SystemClock_Config();
 
-	BSP_PB_Init(BUTTON_WAKEUP, BUTTON_MODE_GPIO);
+	BSP_PB_Init(BUTTON_WAKEUP, BUTTON_MODE_EXTI);
 
 	/* Add your application code here
 	 */
@@ -152,6 +157,13 @@ int main(void) {
 	led1.Pull = GPIO_PULLDOWN;
 	led1.Speed = GPIO_SPEED_HIGH;
 
+	button.Pin = GPIO_PIN_6;
+	button.Mode = GPIO_MODE_IT_RISING;
+	button.Pull = GPIO_PULLUP;
+	button.Speed = GPIO_SPEED_HIGH;
+
+	HAL_GPIO_Init(GPIOF, &button);
+
 	HAL_GPIO_Init(GPIOF, &led1);
 
 	printf("\n-----------------WELCOME-----------------\r\n");
@@ -159,27 +171,25 @@ int main(void) {
 
 	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_SET);
 
-	uint32_t button = 0;
+	HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0x0F, 0x00);
+
+	HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 
 	while (1) {
-
-	if (BSP_PB_GetState(BUTTON_WAKEUP) == 1) {
-		HAL_Delay(75);
-		if (BSP_PB_GetState(BUTTON_WAKEUP) == 1) {
-			  button++;
-		}
 	}
+}
 
-		switch(button) {
-			case 1:
-				TIM1->CCR1 = 1000;
-				break;
-			case 2:
-				TIM1->CCR1 = 0;
-				button = 0;
-				break;
-		}
+void EXTI9_5_IRQHandler()
+{
+	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_6);
+}
 
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+	if (TIM1->CCR1 == 0) {
+		TIM1->CCR1 = 1000;
+	} else {
+		TIM1->CCR1 = 0;
 	}
 }
 
