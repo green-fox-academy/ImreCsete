@@ -56,6 +56,7 @@ GPIO_InitTypeDef led0;
 GPIO_InitTypeDef led1;
 GPIO_InitTypeDef button;
 TIM_HandleTypeDef TimHandle;
+TIM_HandleTypeDef TimHandle2;
 TIM_OC_InitTypeDef sConfig;
 
 volatile uint32_t timIntPeriod;
@@ -85,6 +86,8 @@ static void CPU_CACHE_Enable(void);
 
 void EXTI9_5_IRQHandler();
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
+void TIM8_UP_TIM13_IRQHandler();
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
 
 int main(void) {
 	/* This project template calls firstly two functions in order to configure MPU feature
@@ -132,6 +135,7 @@ int main(void) {
 	TimHandle.Init.Prescaler         = 1;
 	TimHandle.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
 	TimHandle.Init.CounterMode 		 = TIM_COUNTERMODE_UP;
+	//TimHandle.Init.RepetitionCounter = 0;
 
 	HAL_TIM_PWM_Init(&TimHandle);
 
@@ -140,6 +144,17 @@ int main(void) {
 
 	HAL_TIM_PWM_ConfigChannel(&TimHandle, &sConfig, TIM_CHANNEL_1);
 	HAL_TIM_PWM_Start(&TimHandle, TIM_CHANNEL_1);
+
+	__HAL_RCC_TIM8_CLK_ENABLE();
+
+	TimHandle2.Instance               = TIM8;
+	TimHandle2.Init.Period            = 500;
+	TimHandle2.Init.Prescaler         = 54000;
+	TimHandle2.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
+	TimHandle2.Init.CounterMode 	  = TIM_COUNTERMODE_UP;
+
+	HAL_TIM_Base_Init(&TimHandle2);
+	HAL_TIM_Base_Start_IT(&TimHandle2);
 
 	__HAL_RCC_GPIOA_CLK_ENABLE();
 
@@ -172,8 +187,10 @@ int main(void) {
 	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_SET);
 
 	HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0x0F, 0x00);
-
 	HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
+
+	HAL_NVIC_SetPriority(TIM8_UP_TIM13_IRQn, 0x0F, 0x00);
+	HAL_NVIC_EnableIRQ(TIM8_UP_TIM13_IRQn);
 
 	while (1) {
 	}
@@ -184,10 +201,24 @@ void EXTI9_5_IRQHandler()
 	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_6);
 }
 
+void TIM8_UP_TIM13_IRQHandler()
+{
+	HAL_TIM_IRQHandler(&TimHandle2);
+}
+
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 	if (TIM1->CCR1 == 0) {
 		TIM1->CCR1 = 1000;
+	} else {
+		TIM1->CCR1 = 0;
+	}
+}
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+	if (TIM1->CCR1 == 0) {
+		TIM1->CCR1 = 500;
 	} else {
 		TIM1->CCR1 = 0;
 	}
