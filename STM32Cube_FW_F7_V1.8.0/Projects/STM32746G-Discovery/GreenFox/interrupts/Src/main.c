@@ -56,7 +56,7 @@ GPIO_InitTypeDef led0;
 GPIO_InitTypeDef led1;
 GPIO_InitTypeDef button;
 TIM_HandleTypeDef TimHandle;
-TIM_HandleTypeDef TimHandle2;
+TIM_HandleTypeDef Tim2Handle;
 TIM_OC_InitTypeDef sConfig;
 
 volatile uint32_t timIntPeriod;
@@ -86,8 +86,9 @@ static void CPU_CACHE_Enable(void);
 
 void EXTI9_5_IRQHandler();
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
-void TIM8_UP_TIM13_IRQHandler();
+void TIM2_IRQHandler();
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
+uint32_t event = 0;
 
 int main(void) {
 	/* This project template calls firstly two functions in order to configure MPU feature
@@ -131,11 +132,12 @@ int main(void) {
 	__HAL_RCC_TIM1_CLK_ENABLE();
 
 	TimHandle.Instance               = TIM1;
-	TimHandle.Init.Period            = 1000;
+	TimHandle.Init.Period            = 1646;
 	TimHandle.Init.Prescaler         = 1;
 	TimHandle.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
 	TimHandle.Init.CounterMode 		 = TIM_COUNTERMODE_UP;
-	//TimHandle.Init.RepetitionCounter = 0;
+	HAL_TIM_Base_Init(&TimHandle);
+	HAL_TIM_Base_Start_IT(&TimHandle);
 
 	HAL_TIM_PWM_Init(&TimHandle);
 
@@ -143,23 +145,23 @@ int main(void) {
 	sConfig.Pulse = 0;
 
 	HAL_TIM_PWM_ConfigChannel(&TimHandle, &sConfig, TIM_CHANNEL_1);
-	HAL_TIM_PWM_Start(&TimHandle, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start_IT(&TimHandle, TIM_CHANNEL_1);
 
-	__HAL_RCC_TIM8_CLK_ENABLE();
+	__HAL_RCC_TIM2_CLK_ENABLE();
 
-	TimHandle2.Instance               = TIM8;
-	TimHandle2.Init.Period            = 500;
-	TimHandle2.Init.Prescaler         = 54000;
-	TimHandle2.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
-	TimHandle2.Init.CounterMode 	  = TIM_COUNTERMODE_UP;
-
-	HAL_TIM_Base_Init(&TimHandle2);
-	HAL_TIM_Base_Start_IT(&TimHandle2);
+	Tim2Handle.Instance               = TIM2;
+	Tim2Handle.Init.Period            = 1646;
+	Tim2Handle.Init.Prescaler         = 0xFFFF;
+	Tim2Handle.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
+	Tim2Handle.Init.CounterMode 	  = TIM_COUNTERMODE_UP;
+	HAL_TIM_Base_Init(&Tim2Handle);
+	HAL_TIM_Base_Start_IT(&Tim2Handle);
 
 	__HAL_RCC_GPIOA_CLK_ENABLE();
 
 	led0.Pin = GPIO_PIN_8;
 	led0.Mode = GPIO_MODE_AF_PP;
+	led0.Pull = GPIO_NOPULL;
 	led0.Speed = GPIO_SPEED_HIGH;
 	led0.Alternate = GPIO_AF1_TIM1;
 
@@ -189,8 +191,8 @@ int main(void) {
 	HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0x0F, 0x00);
 	HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 
-	HAL_NVIC_SetPriority(TIM8_UP_TIM13_IRQn, 0x0F, 0x00);
-	HAL_NVIC_EnableIRQ(TIM8_UP_TIM13_IRQn);
+	HAL_NVIC_SetPriority(TIM2_IRQn, 0x0F, 0x00);
+	HAL_NVIC_EnableIRQ(TIM2_IRQn);
 
 	while (1) {
 	}
@@ -201,26 +203,22 @@ void EXTI9_5_IRQHandler()
 	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_6);
 }
 
-void TIM8_UP_TIM13_IRQHandler()
+void TIM2_IRQHandler()
 {
-	HAL_TIM_IRQHandler(&TimHandle2);
+	HAL_TIM_IRQHandler(&Tim2Handle);
 }
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-	if (TIM1->CCR1 == 0) {
-		TIM1->CCR1 = 1000;
-	} else {
-		TIM1->CCR1 = 0;
+	if (TIM1->CCR1 != 1646) {
+		TIM1->CCR1 = TIM1->CCR1 + 50;
 	}
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-	if (TIM1->CCR1 == 0) {
-		TIM1->CCR1 = 500;
-	} else {
-		TIM1->CCR1 = 0;
+	if (TIM1->CCR1 != 0) {
+		TIM1->CCR1 = TIM1->CCR1 / 2;
 	}
 }
 
@@ -287,7 +285,7 @@ static void SystemClock_Config(void) {
 	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
 	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
 	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
-	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV8;
+	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
 	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_7) != HAL_OK) {
 		Error_Handler();
 	}
