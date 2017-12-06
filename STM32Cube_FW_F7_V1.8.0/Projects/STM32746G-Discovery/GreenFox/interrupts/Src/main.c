@@ -151,7 +151,7 @@ int main(void) {
 
 	Tim2Handle.Instance               = TIM2;
 	Tim2Handle.Init.Period            = 1646;
-	Tim2Handle.Init.Prescaler         = 0xFFFF;
+	Tim2Handle.Init.Prescaler         = (0xFFFF / 30);
 	Tim2Handle.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
 	Tim2Handle.Init.CounterMode 	  = TIM_COUNTERMODE_UP;
 	HAL_TIM_Base_Init(&Tim2Handle);
@@ -188,7 +188,7 @@ int main(void) {
 
 	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_SET);
 
-	HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0x0F, 0x00);
+	HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0x0F, 0x01);
 	HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 
 	HAL_NVIC_SetPriority(TIM2_IRQn, 0x0F, 0x00);
@@ -210,15 +210,19 @@ void TIM2_IRQHandler()
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-	if (TIM1->CCR1 != 1646) {
-		TIM1->CCR1 = TIM1->CCR1 + 50;
+	if (TIM1->CCR1 < 1646 - 75) {
+		TIM1->CCR1 = TIM1->CCR1 + 75;
+	} else {
+		TIM1->CCR1 = 1646;
 	}
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-	if (TIM1->CCR1 != 0) {
-		TIM1->CCR1 = TIM1->CCR1 / 2;
+	if (TIM1->CCR1 > 10) {
+		TIM1->CCR1 = TIM1->CCR1 - 10;
+	} else {
+		TIM1->CCR1 = 0;
 	}
 }
 
