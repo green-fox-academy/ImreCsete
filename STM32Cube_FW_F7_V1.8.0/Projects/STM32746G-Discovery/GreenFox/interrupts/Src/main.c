@@ -51,10 +51,11 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+
 UART_HandleTypeDef uart_handle;
-GPIO_InitTypeDef led0;
-GPIO_InitTypeDef led1;
-GPIO_InitTypeDef button;
+GPIO_InitTypeDef fan0;
+GPIO_InitTypeDef button0;
+GPIO_InitTypeDef button1;
 TIM_HandleTypeDef TimHandle;
 TIM_HandleTypeDef Tim2Handle;
 TIM_OC_InitTypeDef sConfig;
@@ -85,6 +86,7 @@ static void CPU_CACHE_Enable(void);
  */
 
 void EXTI9_5_IRQHandler();
+void EXTI0_IRQHandler();
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
 void TIM2_IRQHandler();
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
@@ -142,7 +144,7 @@ int main(void) {
 	HAL_TIM_PWM_Init(&TimHandle);
 
 	sConfig.OCMode = TIM_OCMODE_PWM1;
-	sConfig.Pulse = 0;
+	sConfig.Pulse = 1646;
 
 	HAL_TIM_PWM_ConfigChannel(&TimHandle, &sConfig, TIM_CHANNEL_1);
 	HAL_TIM_PWM_Start_IT(&TimHandle, TIM_CHANNEL_1);
@@ -159,43 +161,49 @@ int main(void) {
 
 	__HAL_RCC_GPIOA_CLK_ENABLE();
 
-	led0.Pin = GPIO_PIN_8;
-	led0.Mode = GPIO_MODE_AF_PP;
-	led0.Pull = GPIO_NOPULL;
-	led0.Speed = GPIO_SPEED_HIGH;
-	led0.Alternate = GPIO_AF1_TIM1;
+	fan0.Pin = GPIO_PIN_8;
+	fan0.Mode = GPIO_MODE_AF_PP;
+	fan0.Pull = GPIO_NOPULL;
+	fan0.Speed = GPIO_SPEED_HIGH;
+	fan0.Alternate = GPIO_AF1_TIM1;
 
-	HAL_GPIO_Init(GPIOA, &led0);
+	HAL_GPIO_Init(GPIOA, &fan0);
 
 	__HAL_RCC_GPIOF_CLK_ENABLE();
 
-	led1.Pin = GPIO_PIN_10;
-	led1.Mode = GPIO_MODE_OUTPUT_PP;
-	led1.Pull = GPIO_PULLDOWN;
-	led1.Speed = GPIO_SPEED_HIGH;
+	button0.Pin = GPIO_PIN_6;
+	button0.Mode = GPIO_MODE_IT_RISING;
+	button0.Pull = GPIO_PULLUP;
+	button0.Speed = GPIO_SPEED_HIGH;
 
-	button.Pin = GPIO_PIN_6;
-	button.Mode = GPIO_MODE_IT_RISING;
-	button.Pull = GPIO_PULLUP;
-	button.Speed = GPIO_SPEED_HIGH;
+	HAL_GPIO_Init(GPIOF, &button0);
 
-	HAL_GPIO_Init(GPIOF, &button);
+	button1.Pin = GPIO_PIN_0;
+	button1.Mode = GPIO_MODE_IT_RISING;
+	button1.Pull = GPIO_PULLUP;
+	button1.Speed = GPIO_SPEED_HIGH;
 
-	HAL_GPIO_Init(GPIOF, &led1);
+	HAL_GPIO_Init(GPIOA, &button1);
 
 	printf("\n-----------------WELCOME-----------------\r\n");
 	printf("**********in STATIC interrupts WS**********\r\n\n");
 
-	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_SET);
-
-	HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0x0F, 0x01);
+	HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0x0F, 0x00);
 	HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
+
+	HAL_NVIC_SetPriority(EXTI0_IRQn, 0x0F, 0x00);
+	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 
 	HAL_NVIC_SetPriority(TIM2_IRQn, 0x0F, 0x00);
 	HAL_NVIC_EnableIRQ(TIM2_IRQn);
 
 	while (1) {
 	}
+}
+
+void EXTI0_IRQHandler()
+{
+	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_0);
 }
 
 void EXTI9_5_IRQHandler()
@@ -210,20 +218,28 @@ void TIM2_IRQHandler()
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-	if (TIM1->CCR1 < 1646 - 75) {
-		TIM1->CCR1 = TIM1->CCR1 + 75;
+	if (GPIO_Pin == GPIO_PIN_6) {
+		if (TIM1->CCR1 > 50) {
+			TIM1->CCR1 = TIM1->CCR1 - 50;
+		} else {
+			TIM1->CCR1 = 0;
+		}
 	} else {
-		TIM1->CCR1 = 1646;
+		if (TIM1->CCR1 < 1596) {
+			TIM1->CCR1 = TIM1->CCR1 + 50;
+		} else {
+			TIM1->CCR1 = 1646;
+		}
 	}
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-	if (TIM1->CCR1 > 10) {
+	/*if (TIM1->CCR1 > 10) {
 		TIM1->CCR1 = TIM1->CCR1 - 10;
 	} else {
 		TIM1->CCR1 = 0;
-	}
+	}*/
 }
 
 /**
