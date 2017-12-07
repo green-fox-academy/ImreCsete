@@ -56,11 +56,10 @@ UART_HandleTypeDef uart_handle;
 GPIO_InitTypeDef fan0;
 GPIO_InitTypeDef button0;
 GPIO_InitTypeDef button1;
+GPIO_InitTypeDef sensor;
 TIM_HandleTypeDef TimHandle;
 TIM_HandleTypeDef Tim2Handle;
 TIM_OC_InitTypeDef sConfig;
-
-volatile uint32_t timIntPeriod;
 
 /* Private function prototypes -----------------------------------------------*/
 
@@ -134,8 +133,8 @@ int main(void) {
 	__HAL_RCC_TIM1_CLK_ENABLE();
 
 	TimHandle.Instance               = TIM1;
-	TimHandle.Init.Period            = 1646;
-	TimHandle.Init.Prescaler         = 1;
+	TimHandle.Init.Period            = 5000;
+	TimHandle.Init.Prescaler         = 5000;
 	TimHandle.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
 	TimHandle.Init.CounterMode 		 = TIM_COUNTERMODE_UP;
 	HAL_TIM_Base_Init(&TimHandle);
@@ -144,7 +143,7 @@ int main(void) {
 	HAL_TIM_PWM_Init(&TimHandle);
 
 	sConfig.OCMode = TIM_OCMODE_PWM1;
-	sConfig.Pulse = 1646;
+	sConfig.Pulse = 2500;
 
 	HAL_TIM_PWM_ConfigChannel(&TimHandle, &sConfig, TIM_CHANNEL_1);
 	HAL_TIM_PWM_Start_IT(&TimHandle, TIM_CHANNEL_1);
@@ -153,7 +152,7 @@ int main(void) {
 
 	Tim2Handle.Instance               = TIM2;
 	Tim2Handle.Init.Period            = 1646;
-	Tim2Handle.Init.Prescaler         = (0xFFFF / 30);
+	Tim2Handle.Init.Prescaler         = (0xFFFF / 10);
 	Tim2Handle.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
 	Tim2Handle.Init.CounterMode 	  = TIM_COUNTERMODE_UP;
 	HAL_TIM_Base_Init(&Tim2Handle);
@@ -184,6 +183,14 @@ int main(void) {
 	button1.Speed = GPIO_SPEED_HIGH;
 
 	HAL_GPIO_Init(GPIOA, &button1);
+
+	sensor.Pin = GPIO_PIN_15;
+	sensor.Mode = GPIO_MODE_INPUT;
+	sensor.Pull = GPIO_PULLUP;
+	sensor.Speed = GPIO_SPEED_HIGH;
+	sensor.Alternate = GPIO_AF1_TIM2;
+
+	HAL_GPIO_Init(GPIOA, &sensor);
 
 	printf("\n-----------------WELCOME-----------------\r\n");
 	printf("**********in STATIC interrupts WS**********\r\n\n");
@@ -219,27 +226,29 @@ void TIM2_IRQHandler()
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 	if (GPIO_Pin == GPIO_PIN_6) {
-		if (TIM1->CCR1 > 50) {
-			TIM1->CCR1 = TIM1->CCR1 - 50;
+		if (TIM1->CCR1 > 250) {
+			TIM1->CCR1 = TIM1->CCR1 - 250;
 		} else {
 			TIM1->CCR1 = 0;
 		}
 	} else {
-		if (TIM1->CCR1 < 1596) {
-			TIM1->CCR1 = TIM1->CCR1 + 50;
+		if (TIM1->CCR1 < 4750) {
+			TIM1->CCR1 = TIM1->CCR1 + 250;
 		} else {
-			TIM1->CCR1 = 1646;
+			TIM1->CCR1 = 5000;
 		}
 	}
 }
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-	/*if (TIM1->CCR1 > 10) {
-		TIM1->CCR1 = TIM1->CCR1 - 10;
+	event++;
+	if (TIM1->CCR1 > 1) {
+		TIM1->CCR1 = TIM1->CCR1 - 1;
 	} else {
 		TIM1->CCR1 = 0;
-	}*/
+	}
+	printf("Interrupt event: %d.\nPulse rate set to: %d.\n", event, (TIM1->CCR1));
 }
 
 /**
