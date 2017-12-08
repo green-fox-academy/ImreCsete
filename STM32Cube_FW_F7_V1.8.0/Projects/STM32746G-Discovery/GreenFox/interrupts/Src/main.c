@@ -59,7 +59,9 @@ GPIO_InitTypeDef button1;
 GPIO_InitTypeDef sensor;
 TIM_HandleTypeDef TimHandle;
 TIM_HandleTypeDef Tim2Handle;
+TIM_HandleTypeDef Tim3Handle;
 TIM_OC_InitTypeDef sConfig;
+TIM_IC_InitTypeDef ICConfig;
 
 /* Private function prototypes -----------------------------------------------*/
 
@@ -158,6 +160,24 @@ int main(void) {
 	HAL_TIM_Base_Init(&Tim2Handle);
 	HAL_TIM_Base_Start_IT(&Tim2Handle);
 
+	__HAL_RCC_TIM3_CLK_ENABLE();
+
+	Tim3Handle.Instance               = TIM3;
+	Tim3Handle.Init.Period            = 1646;
+	Tim3Handle.Init.Prescaler         = (0xFFFF / 10);
+	Tim3Handle.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
+	Tim3Handle.Init.CounterMode 	  = TIM_COUNTERMODE_UP;
+	HAL_TIM_Base_Init(&Tim3Handle);
+	HAL_TIM_Base_Start_IT(&Tim3Handle);
+
+	ICConfig.ICPolarity = TIM_ICPOLARITY_RISING;
+	ICConfig.ICSelection = TIM_ICSELECTION_DIRECTTI;
+	ICConfig.ICPrescaler = TIM_ICPSC_DIV1;
+	ICConfig.ICFilter = 0;
+
+	HAL_TIM_IC_ConfigChannel(&Tim3Handle, &ICConfig, TIM_CHANNEL_1);
+	HAL_TIM_IC_Start_IT(&Tim3Handle, TIM_CHANNEL_1);
+
 	__HAL_RCC_GPIOA_CLK_ENABLE();
 
 	fan0.Pin = GPIO_PIN_8;
@@ -184,13 +204,15 @@ int main(void) {
 
 	HAL_GPIO_Init(GPIOA, &button1);
 
-	sensor.Pin = GPIO_PIN_15;
-	sensor.Mode = GPIO_MODE_INPUT;
+	__HAL_RCC_GPIOB_CLK_ENABLE();
+
+	sensor.Pin = GPIO_PIN_4;
+	sensor.Mode = GPIO_MODE_IT_RISING;
 	sensor.Pull = GPIO_PULLUP;
 	sensor.Speed = GPIO_SPEED_HIGH;
-	sensor.Alternate = GPIO_AF1_TIM2;
+	sensor.Alternate = GPIO_AF2_TIM3;
 
-	HAL_GPIO_Init(GPIOA, &sensor);
+	HAL_GPIO_Init(GPIOB, &sensor);
 
 	printf("\n-----------------WELCOME-----------------\r\n");
 	printf("**********in STATIC interrupts WS**********\r\n\n");
@@ -203,6 +225,9 @@ int main(void) {
 
 	HAL_NVIC_SetPriority(TIM2_IRQn, 0x0F, 0x00);
 	HAL_NVIC_EnableIRQ(TIM2_IRQn);
+
+	HAL_NVIC_SetPriority(TIM3_IRQn, 0x0F, 0x00);
+	HAL_NVIC_EnableIRQ(TIM3_IRQn);
 
 	while (1) {
 	}
@@ -223,17 +248,22 @@ void TIM2_IRQHandler()
 	HAL_TIM_IRQHandler(&Tim2Handle);
 }
 
+void TIM3_IRQHandler()
+{
+	HAL_TIM_IRQHandler(&Tim3Handle);
+}
+
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 	if (GPIO_Pin == GPIO_PIN_6) {
-		if (TIM1->CCR1 > 250) {
-			TIM1->CCR1 = TIM1->CCR1 - 250;
+		if (TIM1->CCR1 > 25) {
+			TIM1->CCR1 = TIM1->CCR1 - 25;
 		} else {
 			TIM1->CCR1 = 0;
 		}
 	} else {
-		if (TIM1->CCR1 < 4750) {
-			TIM1->CCR1 = TIM1->CCR1 + 250;
+		if (TIM1->CCR1 < 4975) {
+			TIM1->CCR1 = TIM1->CCR1 + 25;
 		} else {
 			TIM1->CCR1 = 5000;
 		}
@@ -243,13 +273,26 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 	event++;
+	printf("Interrupt event: %d\nPulse rate percent: %d\n", event, ((TIM1->CCR1) / 50), TIM3->CCR1);
+}
+
+void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
+{
+
+}
+
+
+
+/*void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+	event++;
 	if (TIM1->CCR1 > 1) {
 		TIM1->CCR1 = TIM1->CCR1 - 1;
 	} else {
 		TIM1->CCR1 = 0;
 	}
 	printf("Interrupt event: %d.\nPulse rate set to: %d.\n", event, (TIM1->CCR1));
-}
+}*/
 
 /**
  * @brief  Retargets the C library printf function to the USART.
