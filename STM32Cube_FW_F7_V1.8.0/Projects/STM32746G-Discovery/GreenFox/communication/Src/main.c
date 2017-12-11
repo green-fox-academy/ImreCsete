@@ -53,6 +53,10 @@
 /* Private variables ---------------------------------------------------------*/
 UART_HandleTypeDef uart_handle;
 
+GPIO_InitTypeDef GPIOTxConfig;
+GPIO_InitTypeDef GPIORxConfig;
+UART_HandleTypeDef practice_uart_handle;
+
 volatile uint32_t timIntPeriod;
 
 /* Private function prototypes -----------------------------------------------*/
@@ -71,7 +75,7 @@ static void MPU_Config(void);
 static void CPU_CACHE_Enable(void);
 
 /* Private functions ---------------------------------------------------------*/
-
+void Practice_BSP_COM_Init(UART_HandleTypeDef *huart);
 /**
  * @brief  Main program
  * @param  None
@@ -114,15 +118,47 @@ int main(void) {
 	uart_handle.Init.HwFlowCtl = UART_HWCONTROL_NONE;
 	uart_handle.Init.Mode = UART_MODE_TX_RX;
 
-	BSP_COM_Init(COM1, &uart_handle);
-
+	Practice_BSP_COM_Init(&uart_handle);
 
 	printf("\n-----------------WELCOME-----------------\r\n");
-	printf("**********in STATIC interrupts WS**********\r\n\n");
+	printf("**********in STATIC communication WS**********\r\n\n");
 
 
 	while (1) {
+
+		printf("Please work.\n");
+		HAL_Delay(1000);
 	}
+}
+
+void Practice_BSP_COM_Init(UART_HandleTypeDef *huart)
+{
+
+  /* Enable GPIO clock */
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+
+  /* Enable USART clock */
+  __HAL_RCC_USART1_CLK_ENABLE();
+
+  GPIOTxConfig.Pin 			= GPIO_PIN_9;
+  GPIOTxConfig.Mode         = GPIO_MODE_AF_PP;
+  GPIOTxConfig.Pull			= GPIO_PULLUP;
+  GPIOTxConfig.Speed 		= GPIO_SPEED_FAST;
+  GPIOTxConfig.Alternate    = GPIO_AF7_USART1;
+
+  HAL_GPIO_Init(GPIOA, &GPIOTxConfig);
+
+  GPIORxConfig.Pin 			= GPIO_PIN_10;
+  GPIORxConfig.Mode         = GPIO_MODE_AF_PP;
+  GPIORxConfig.Speed 		= GPIO_SPEED_FAST;
+  GPIORxConfig.Alternate    = GPIO_AF7_USART1;
+
+  HAL_GPIO_Init(GPIOA, &GPIORxConfig);
+
+  /* USART configuration */
+
+  huart->Instance = USART1;
+  HAL_UART_Init(huart);
 }
 
 /**
