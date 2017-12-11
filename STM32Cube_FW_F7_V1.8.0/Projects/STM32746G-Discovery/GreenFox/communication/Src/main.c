@@ -78,6 +78,8 @@ static void CPU_CACHE_Enable(void);
 
 void Practice_BSP_COM_Init(UART_HandleTypeDef *huart);
 void LED_Init(GPIO_InitTypeDef *led);
+void Recieve_data(char *input);
+void Send_data(char *input);
 
 /**
  * @brief  Main program
@@ -125,16 +127,25 @@ int main(void) {
 
 	LED_Init(&led0);
 
-	//HAL_UART_Receive()
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_RESET);
 
 	printf("\n-----------------WELCOME-----------------\r\n");
 	printf("**********in STATIC communication WS**********\r\n\n");
 
+	char buffer[100];
 
 	while (1) {
 
-		printf("Please work.\n");
-		HAL_Delay(1000);
+		Recieve_data(buffer);
+		Send_data(buffer);
+
+		if (strcmp(buffer, "on\n") == 0) {
+			HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_SET);
+		} else if (strcmp(buffer, "off\n") == 0) {
+			HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_RESET);
+		}
+
+		buffer[0] = '\0';
 	}
 }
 
@@ -143,6 +154,7 @@ void Practice_BSP_COM_Init(UART_HandleTypeDef *huart)
 
   /* Enable GPIO clock */
   __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /* Enable USART clock */
   __HAL_RCC_USART1_CLK_ENABLE();
@@ -155,12 +167,12 @@ void Practice_BSP_COM_Init(UART_HandleTypeDef *huart)
 
   HAL_GPIO_Init(GPIOA, &GPIOTxConfig);
 
-  GPIORxConfig.Pin 			= GPIO_PIN_10;
+  GPIORxConfig.Pin 			= GPIO_PIN_7;
   GPIORxConfig.Mode         = GPIO_MODE_AF_PP;
   GPIORxConfig.Speed 		= GPIO_SPEED_FAST;
   GPIORxConfig.Alternate    = GPIO_AF7_USART1;
 
-  HAL_GPIO_Init(GPIOA, &GPIORxConfig);
+  HAL_GPIO_Init(GPIOB, &GPIORxConfig);
 
   /* USART configuration */
 
@@ -178,6 +190,28 @@ void LED_Init(GPIO_InitTypeDef *led)
 	led->Speed = GPIO_SPEED_HIGH;
 
 	HAL_GPIO_Init(GPIOF, led);
+}
+
+void Recieve_data(char *input)
+{
+	uint32_t size = 0;
+	input[0] = '\0';
+
+	do {
+		HAL_UART_Receive(&uart_handle, (uint8_t *) &input[size], 1, HAL_MAX_DELAY);
+		size++;
+	} while (input[size - 1] != '\n');
+
+	input[size] = '\0';
+}
+
+void Send_data(char *input)
+{
+	uint32_t i = 0;
+	while (input[i] != '\0') {
+		HAL_UART_Transmit(&uart_handle, (uint8_t *) &input[i], 1, 0xFFFF);
+		i++;
+	}
 }
 
 /**
