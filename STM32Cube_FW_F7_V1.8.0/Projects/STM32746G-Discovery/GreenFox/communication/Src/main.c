@@ -55,7 +55,7 @@ UART_HandleTypeDef uart_handle;
 
 GPIO_InitTypeDef GPIOTxConfig;
 GPIO_InitTypeDef GPIORxConfig;
-UART_HandleTypeDef practice_uart_handle;
+GPIO_InitTypeDef led0;
 
 volatile uint32_t timIntPeriod;
 
@@ -75,7 +75,10 @@ static void MPU_Config(void);
 static void CPU_CACHE_Enable(void);
 
 /* Private functions ---------------------------------------------------------*/
+
 void Practice_BSP_COM_Init(UART_HandleTypeDef *huart);
+void LED_Init(GPIO_InitTypeDef *led);
+
 /**
  * @brief  Main program
  * @param  None
@@ -120,6 +123,10 @@ int main(void) {
 
 	Practice_BSP_COM_Init(&uart_handle);
 
+	LED_Init(&led0);
+
+	//HAL_UART_Receive()
+
 	printf("\n-----------------WELCOME-----------------\r\n");
 	printf("**********in STATIC communication WS**********\r\n\n");
 
@@ -159,6 +166,18 @@ void Practice_BSP_COM_Init(UART_HandleTypeDef *huart)
 
   huart->Instance = USART1;
   HAL_UART_Init(huart);
+}
+
+void LED_Init(GPIO_InitTypeDef *led)
+{
+	__HAL_RCC_GPIOF_CLK_ENABLE();
+
+	led->Pin = GPIO_PIN_10;
+	led->Mode = GPIO_MODE_OUTPUT_PP;
+	led->Pull = GPIO_PULLDOWN;
+	led->Speed = GPIO_SPEED_HIGH;
+
+	HAL_GPIO_Init(GPIOF, led);
 }
 
 /**
