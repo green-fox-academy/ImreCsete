@@ -143,6 +143,14 @@ int main(void) {
 			HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_SET);
 		} else if (strcmp(buffer, "off\n") == 0) {
 			HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_RESET);
+		} else {
+				for (int i = 0; i < 3; i++) {
+					HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_SET);
+					HAL_Delay(200);
+					HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_RESET);
+					HAL_Delay(200);
+				}
+
 		}
 
 		buffer[0] = '\0';
