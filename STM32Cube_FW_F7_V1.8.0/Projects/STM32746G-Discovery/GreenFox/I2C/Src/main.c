@@ -125,8 +125,16 @@ int main(void) {
 	printf("\n-----------------WELCOME-----------------\r\n");
 	printf("**********in STATIC interrupts WS**********\r\n\n");
 
+	uint8_t transmit = 0;
+	uint8_t receive = 0;
+	int counter = 0;
 
 	while (1) {
+		counter ++;
+		HAL_I2C_Master_Transmit(&I2cHandle, 0b1001000<<1, &transmit, 1, 0xFFFF);
+		HAL_I2C_Master_Receive(&I2cHandle, 0b1001000<<1, &receive, 1, 0xFFFF);
+		printf("Temperature reading #%d. is: %i Celsius.\n", counter, receive);
+		HAL_Delay(1000);
 	}
 }
 
@@ -135,7 +143,7 @@ void Practice_I2C_Init()
 	__HAL_RCC_GPIOB_CLK_ENABLE();
 	__HAL_RCC_I2C1_CLK_ENABLE();
 
-	GPIOTxConfig.Pin 			= GPIO_PIN_14;
+	GPIOTxConfig.Pin 			= GPIO_PIN_9 | GPIO_PIN_8;
 	GPIOTxConfig.Mode           = GPIO_MODE_AF_OD;
 	GPIOTxConfig.Speed 			= GPIO_SPEED_HIGH;
 	GPIOTxConfig.Pull 			= GPIO_PULLUP;
