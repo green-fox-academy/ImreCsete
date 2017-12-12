@@ -52,6 +52,8 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 UART_HandleTypeDef uart_handle;
+GPIO_InitTypeDef GPIOTxConfig;
+I2C_HandleTypeDef I2cHandle;
 
 volatile uint32_t timIntPeriod;
 
@@ -71,6 +73,8 @@ static void MPU_Config(void);
 static void CPU_CACHE_Enable(void);
 
 /* Private functions ---------------------------------------------------------*/
+
+void Practice_I2C_Init();
 
 /**
  * @brief  Main program
@@ -116,6 +120,7 @@ int main(void) {
 
 	BSP_COM_Init(COM1, &uart_handle);
 
+	Practice_I2C_Init();
 
 	printf("\n-----------------WELCOME-----------------\r\n");
 	printf("**********in STATIC interrupts WS**********\r\n\n");
@@ -123,6 +128,26 @@ int main(void) {
 
 	while (1) {
 	}
+}
+
+void Practice_I2C_Init()
+{
+	__HAL_RCC_GPIOB_CLK_ENABLE();
+	__HAL_RCC_I2C1_CLK_ENABLE();
+
+	GPIOTxConfig.Pin 			= GPIO_PIN_14;
+	GPIOTxConfig.Mode           = GPIO_MODE_AF_OD;
+	GPIOTxConfig.Speed 			= GPIO_SPEED_HIGH;
+	GPIOTxConfig.Pull 			= GPIO_PULLUP;
+	GPIOTxConfig.Alternate      = GPIO_AF4_I2C1;
+
+	HAL_GPIO_Init(GPIOB, &GPIOTxConfig);
+
+	I2cHandle.Instance             = I2C1;
+	I2cHandle.Init.Timing          = 0x40912732;
+	I2cHandle.Init.AddressingMode  = I2C_ADDRESSINGMODE_7BIT;
+
+	HAL_I2C_Init(&I2cHandle);
 }
 
 /**
