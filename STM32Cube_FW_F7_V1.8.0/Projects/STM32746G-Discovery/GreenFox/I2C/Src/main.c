@@ -52,8 +52,10 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 UART_HandleTypeDef uart_handle;
+TIM_HandleTypeDef TimHandle;
 GPIO_InitTypeDef GPIOTxConfig;
 I2C_HandleTypeDef I2cHandle;
+
 
 int counter;
 uint8_t transmit = 0;
@@ -78,6 +80,9 @@ static void CPU_CACHE_Enable(void);
 
 /* Private functions ---------------------------------------------------------*/
 
+void Interrupt_Timer();
+void TIM2_IRQHandler();
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
 void Practice_I2C_Init();
 void I2C_Practice_Interrupt();
 void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c);
@@ -130,15 +135,41 @@ int main(void) {
 	HAL_NVIC_SetPriority(I2C1_EV_IRQn, 0x0F, 0x00);
 	HAL_NVIC_EnableIRQ(I2C1_EV_IRQn);
 
-	Practice_I2C_Init();
-
 	printf("\n-----------------WELCOME-----------------\r\n");
-	printf("**********in STATIC interrupts WS**********\r\n\n");
+	printf("**********in STATIC I2C WS**********\r\n\n");
+
+	Practice_I2C_Init();
+	Interrupt_Timer();
 
 	while (1) {
-		I2C_Practice_Interrupt();
-		HAL_Delay(1000);
 	}
+}
+
+void Interrupt_Timer()
+{
+	__HAL_RCC_TIM2_CLK_ENABLE();
+
+	TimHandle.Instance               = TIM2;
+	TimHandle.Init.Period            = 8000;
+	TimHandle.Init.Prescaler         = 6750;
+	TimHandle.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
+	TimHandle.Init.CounterMode 		 = TIM_COUNTERMODE_UP;
+	HAL_TIM_Base_Init(&TimHandle);
+	HAL_TIM_Base_Start_IT(&TimHandle);
+
+	HAL_NVIC_SetPriority(TIM2_IRQn, 0x0F, 0x00);
+	HAL_NVIC_EnableIRQ(TIM2_IRQn);
+
+}
+
+void TIM2_IRQHandler()
+{
+	HAL_TIM_IRQHandler(&TimHandle);
+}
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+	I2C_Practice_Interrupt();
 }
 
 void Practice_I2C_Init()
