@@ -53,15 +53,15 @@
 /* Private variables ---------------------------------------------------------*/
 
 UART_HandleTypeDef uart_handle;
-GPIO_InitTypeDef led0;
-GPIO_InitTypeDef led1;
-GPIO_InitTypeDef led2;
-TIM_HandleTypeDef Tim0Handle;
-TIM_HandleTypeDef Tim1Handle;
+GPIO_InitTypeDef fan0;
+GPIO_InitTypeDef button0;
+GPIO_InitTypeDef button1;
+GPIO_InitTypeDef sensor;
+TIM_HandleTypeDef TimHandle;
 TIM_HandleTypeDef Tim2Handle;
-TIM_OC_InitTypeDef s0Config;
-TIM_OC_InitTypeDef s1Config;
-TIM_OC_InitTypeDef s2Config;
+TIM_HandleTypeDef Tim3Handle;
+TIM_OC_InitTypeDef sConfig;
+TIM_IC_InitTypeDef ICConfig;
 
 /* Private function prototypes -----------------------------------------------*/
 
@@ -90,6 +90,8 @@ void EXTI9_5_IRQHandler();
 void EXTI0_IRQHandler();
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
 void TIM2_IRQHandler();
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
+uint32_t event = 0;
 
 int main(void) {
 	/* This project template calls firstly two functions in order to configure MPU feature
@@ -131,236 +133,154 @@ int main(void) {
 	BSP_COM_Init(COM1, &uart_handle);
 
 	__HAL_RCC_TIM1_CLK_ENABLE();
+
+	TimHandle.Instance               = TIM1;
+	TimHandle.Init.Period            = 5000;
+	TimHandle.Init.Prescaler         = 5000;
+	TimHandle.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
+	TimHandle.Init.CounterMode 		 = TIM_COUNTERMODE_UP;
+	HAL_TIM_Base_Init(&TimHandle);
+	HAL_TIM_Base_Start_IT(&TimHandle);
+
+	HAL_TIM_PWM_Init(&TimHandle);
+
+	sConfig.OCMode = TIM_OCMODE_PWM1;
+	sConfig.Pulse = 2500;
+
+	HAL_TIM_PWM_ConfigChannel(&TimHandle, &sConfig, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start_IT(&TimHandle, TIM_CHANNEL_1);
+
 	__HAL_RCC_TIM2_CLK_ENABLE();
-	__HAL_RCC_TIM3_CLK_ENABLE();
-
-	Tim0Handle.Instance               = TIM3;
-	Tim0Handle.Init.Period            = 1646;
-	Tim0Handle.Init.Prescaler         = 1;
-	Tim0Handle.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
-	Tim0Handle.Init.CounterMode 		 = TIM_COUNTERMODE_UP;
-	HAL_TIM_Base_Init(&Tim0Handle);
-	HAL_TIM_Base_Start_IT(&Tim0Handle);
-
-	HAL_TIM_PWM_Init(&Tim0Handle);
-
-	s0Config.OCMode = TIM_OCMODE_PWM1;
-	s0Config.Pulse = 1646;
-
-	HAL_TIM_PWM_ConfigChannel(&Tim0Handle, &s0Config, TIM_CHANNEL_1);
-	HAL_TIM_PWM_Start_IT(&Tim0Handle, TIM_CHANNEL_1);
-
-	Tim1Handle.Instance               = TIM1;
-	Tim1Handle.Init.Period            = 1646;
-	Tim1Handle.Init.Prescaler         = 1;
-	Tim1Handle.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
-	Tim1Handle.Init.CounterMode 		 = TIM_COUNTERMODE_UP;
-	HAL_TIM_Base_Init(&Tim1Handle);
-	HAL_TIM_Base_Start_IT(&Tim1Handle);
-
-	HAL_TIM_PWM_Init(&Tim1Handle);
-
-	s1Config.OCMode = TIM_OCMODE_PWM1;
-	s1Config.Pulse = 1646;
-
-	HAL_TIM_PWM_ConfigChannel(&Tim1Handle, &s1Config, TIM_CHANNEL_1);
-	HAL_TIM_PWM_Start_IT(&Tim1Handle, TIM_CHANNEL_1);
 
 	Tim2Handle.Instance               = TIM2;
 	Tim2Handle.Init.Period            = 1646;
-	Tim2Handle.Init.Prescaler         = 1;
+	Tim2Handle.Init.Prescaler         = (0xFFFF / 10);
 	Tim2Handle.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
-	Tim2Handle.Init.CounterMode 		 = TIM_COUNTERMODE_UP;
+	Tim2Handle.Init.CounterMode 	  = TIM_COUNTERMODE_UP;
 	HAL_TIM_Base_Init(&Tim2Handle);
 	HAL_TIM_Base_Start_IT(&Tim2Handle);
 
-	HAL_TIM_PWM_Init(&Tim2Handle);
+	__HAL_RCC_TIM3_CLK_ENABLE();
 
-	s2Config.OCMode = TIM_OCMODE_PWM1;
-	s2Config.Pulse = 1646;
+	Tim3Handle.Instance               = TIM3;
+	Tim3Handle.Init.Period            = 1646;
+	Tim3Handle.Init.Prescaler         = (0xFFFF / 10);
+	Tim3Handle.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
+	Tim3Handle.Init.CounterMode 	  = TIM_COUNTERMODE_UP;
+	HAL_TIM_Base_Init(&Tim3Handle);
+	HAL_TIM_Base_Start_IT(&Tim3Handle);
 
-	HAL_TIM_PWM_ConfigChannel(&Tim2Handle, &s2Config, TIM_CHANNEL_1);
-	HAL_TIM_PWM_Start_IT(&Tim2Handle, TIM_CHANNEL_1);
+	ICConfig.ICPolarity = TIM_ICPOLARITY_RISING;
+	ICConfig.ICSelection = TIM_ICSELECTION_DIRECTTI;
+	ICConfig.ICPrescaler = TIM_ICPSC_DIV1;
+	ICConfig.ICFilter = 0;
 
-	__HAL_RCC_GPIOB_CLK_ENABLE();
-
-	led0.Pin = GPIO_PIN_4;
-	led0.Mode = GPIO_MODE_AF_PP;
-	led0.Pull = GPIO_NOPULL;
-	led0.Speed = GPIO_SPEED_HIGH;
-	led0.Alternate = GPIO_AF2_TIM3;
-
-	HAL_GPIO_Init(GPIOB, &led0);
+	HAL_TIM_IC_ConfigChannel(&Tim3Handle, &ICConfig, TIM_CHANNEL_1);
+	HAL_TIM_IC_Start_IT(&Tim3Handle, TIM_CHANNEL_1);
 
 	__HAL_RCC_GPIOA_CLK_ENABLE();
 
-	led1.Pin = GPIO_PIN_8;
-	led1.Mode = GPIO_MODE_AF_PP;
-	led1.Pull = GPIO_NOPULL;
-	led1.Speed = GPIO_SPEED_HIGH;
-	led1.Alternate = GPIO_AF1_TIM1;
+	fan0.Pin = GPIO_PIN_8;
+	fan0.Mode = GPIO_MODE_AF_PP;
+	fan0.Pull = GPIO_NOPULL;
+	fan0.Speed = GPIO_SPEED_HIGH;
+	fan0.Alternate = GPIO_AF1_TIM1;
 
-	HAL_GPIO_Init(GPIOA, &led1);
+	HAL_GPIO_Init(GPIOA, &fan0);
 
-	led2.Pin = GPIO_PIN_15;
-	led2.Mode = GPIO_MODE_AF_PP;
-	led2.Pull = GPIO_NOPULL;
-	led2.Speed = GPIO_SPEED_HIGH;
-	led2.Alternate = GPIO_AF1_TIM2;
+	__HAL_RCC_GPIOF_CLK_ENABLE();
 
-	HAL_GPIO_Init(GPIOA, &led2);
+	button0.Pin = GPIO_PIN_6;
+	button0.Mode = GPIO_MODE_IT_RISING;
+	button0.Pull = GPIO_PULLUP;
+	button0.Speed = GPIO_SPEED_HIGH;
 
-	/*HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_SET);*/
+	HAL_GPIO_Init(GPIOF, &button0);
+
+	button1.Pin = GPIO_PIN_0;
+	button1.Mode = GPIO_MODE_IT_RISING;
+	button1.Pull = GPIO_PULLUP;
+	button1.Speed = GPIO_SPEED_HIGH;
+
+	HAL_GPIO_Init(GPIOA, &button1);
+
+	__HAL_RCC_GPIOB_CLK_ENABLE();
+
+	sensor.Pin = GPIO_PIN_4;
+	sensor.Mode = GPIO_MODE_IT_RISING;
+	sensor.Pull = GPIO_PULLUP;
+	sensor.Speed = GPIO_SPEED_HIGH;
+	sensor.Alternate = GPIO_AF2_TIM3;
+
+	HAL_GPIO_Init(GPIOB, &sensor);
 
 	printf("\n-----------------WELCOME-----------------\r\n");
 	printf("**********in STATIC interrupts WS**********\r\n\n");
 
-	while (1) {
+	HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0x0F, 0x00);
+	HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 
-		set_RGB(128,0,0);
-				set_RGB(139,0,0);
-				set_RGB(165,42,42);
-				set_RGB(178,34,34);
-				set_RGB(220,20,60);
-				set_RGB(255,0,0);
-				set_RGB(255,99,71);
-				set_RGB(255,127,80);
-				set_RGB(205,92,92);
-				set_RGB(240,128,128);
-				set_RGB(233,150,122);
-				set_RGB(250,128,114);
-				set_RGB(255,160,122);
-				set_RGB(255,69,0);
-				set_RGB(255,140,0);
-				set_RGB(255,165,0);
-				set_RGB(255,215,0);
-				set_RGB(184,134,11);
-				set_RGB(218,165,32);
-				set_RGB(238,232,170);
-				set_RGB(189,183,107);
-				set_RGB(240,230,140);
-				set_RGB(128,128,0);
-				set_RGB(255,255,0);
-				set_RGB(154,205,50);
-				set_RGB(85,107,47);
-				set_RGB(107,142,35);
-				set_RGB(124,252,0);
-				set_RGB(127,255,0);
-				set_RGB(173,255,47);
-				set_RGB(0,100,0);
-				set_RGB(0,128,0);
-				set_RGB(34,139,34);
-				set_RGB(0,255,0);
-				set_RGB(50,205,50);
-				set_RGB(144,238,144);
-				set_RGB(152,251,152);
-				set_RGB(143,188,143);
-				set_RGB(0,250,154);
-				set_RGB(0,255,127);
-				set_RGB(46,139,87);
-				set_RGB(102,205,170);
-				set_RGB(60,179,113);
-				set_RGB(32,178,170);
-				set_RGB(47,79,79);
-				set_RGB(0,128,128);
-				set_RGB(0,139,139);
-				set_RGB(0,255,255);
-				set_RGB(0,255,255);
-				set_RGB(224,255,255);
-				set_RGB(0,206,209);
-				set_RGB(64,224,208);
-				set_RGB(72,209,204);
-				set_RGB(175,238,238);
-				set_RGB(127,255,212);
-				set_RGB(176,224,230);
-				set_RGB(95,158,160);
-				set_RGB(70,130,180);
-				set_RGB(100,149,237);
-				set_RGB(0,191,255);
-				set_RGB(30,144,255);
-				set_RGB(173,216,230);
-				set_RGB(135,206,235);
-				set_RGB(135,206,250);
-				set_RGB(25,25,112);
-				set_RGB(0,0,128);
-				set_RGB(0,0,139);
-				set_RGB(0,0,205);
-				set_RGB(0,0,255);
-				set_RGB(65,105,225);
-				set_RGB(138,43,226);
-				set_RGB(75,0,130);
-				set_RGB(72,61,139);
-				set_RGB(106,90,205);
-				set_RGB(123,104,238);
-				set_RGB(147,112,219);
-				set_RGB(139,0,139);
-				set_RGB(148,0,211);
-				set_RGB(153,50,204);
-				set_RGB(186,85,211);
-				set_RGB(128,0,128);
-				set_RGB(216,191,216);
-				set_RGB(221,160,221);
-				set_RGB(238,130,238);
-				set_RGB(255,0,255);
-				set_RGB(218,112,214);
-				set_RGB(199,21,133);
-				set_RGB(219,112,147);
-				set_RGB(255,20,147);
-				set_RGB(255,105,180);
-				set_RGB(255,182,193);
-				set_RGB(255,192,203);
-				set_RGB(250,235,215);
-				set_RGB(245,245,220);
-				set_RGB(255,228,196);
-				set_RGB(255,235,205);
-				set_RGB(245,222,179);
-				set_RGB(255,248,220);
-				set_RGB(255,250,205);
-				set_RGB(250,250,210);
-				set_RGB(255,255,224);
-				set_RGB(139,69,19);
-				set_RGB(160,82,45);
-				set_RGB(210,105,30);
-				set_RGB(205,133,63);
-				set_RGB(244,164,96);
-				set_RGB(222,184,135);
-				set_RGB(210,180,140);
-				set_RGB(188,143,143);
-				set_RGB(255,228,181);
-				set_RGB(255,222,173);
-				set_RGB(255,218,185);
-				set_RGB(255,228,225);
-				set_RGB(255,240,245);
-				set_RGB(250,240,230);
-				set_RGB(253,245,230);
-				set_RGB(255,239,213);
-				set_RGB(255,245,238);
-				set_RGB(245,255,250);
-				set_RGB(112,128,144);
-				set_RGB(119,136,153);
-				set_RGB(176,196,222);
-				set_RGB(230,230,250);
-				set_RGB(255,250,240);
-				set_RGB(240,248,255);
-				set_RGB(248,248,255);
-				set_RGB(240,255,240);
-				set_RGB(255,255,240);
-				set_RGB(240,255,255);
-				set_RGB(255,250,250);
-				set_RGB(0,0,0);
+	HAL_NVIC_SetPriority(EXTI0_IRQn, 0x0F, 0x00);
+	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+
+	HAL_NVIC_SetPriority(TIM2_IRQn, 0x0F, 0x00);
+	HAL_NVIC_EnableIRQ(TIM2_IRQn);
+
+	HAL_NVIC_SetPriority(TIM3_IRQn, 0x0F, 0x00);
+	HAL_NVIC_EnableIRQ(TIM3_IRQn);
+
+	while (1) {
 	}
 }
 
-void set_RGB(uint32_t red, uint32_t green, uint32_t blue)
+void EXTI0_IRQHandler()
 {
-	TIM1->CCR1 = (red * 6.4);
-	TIM2->CCR1 = (green * 6.4);
-	TIM3->CCR1 = (blue * 6.4);
-
-	HAL_Delay(100);
+	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_0);
 }
+
+void EXTI9_5_IRQHandler()
+{
+	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_6);
+}
+
+void TIM2_IRQHandler()
+{
+	HAL_TIM_IRQHandler(&Tim2Handle);
+}
+
+void TIM3_IRQHandler()
+{
+	HAL_TIM_IRQHandler(&Tim3Handle);
+}
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+	if (GPIO_Pin == GPIO_PIN_6) {
+		if (TIM1->CCR1 > 25) {
+			TIM1->CCR1 = TIM1->CCR1 - 25;
+		} else {
+			TIM1->CCR1 = 0;
+		}
+	} else {
+		if (TIM1->CCR1 < 4975) {
+			TIM1->CCR1 = TIM1->CCR1 + 25;
+		} else {
+			TIM1->CCR1 = 5000;
+		}
+	}
+}
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+	event++;
+	printf("Interrupt event: %d\nPulse rate percent: %d\n", event, ((TIM1->CCR1) / 50), TIM3->CCR1);
+}
+
+void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim)
+{
+
+}
+
 
 
 /*void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
