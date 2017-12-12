@@ -55,6 +55,10 @@ UART_HandleTypeDef uart_handle;
 GPIO_InitTypeDef GPIOTxConfig;
 I2C_HandleTypeDef I2cHandle;
 
+int counter;
+uint8_t transmit = 0;
+uint8_t receive = 0;
+
 volatile uint32_t timIntPeriod;
 
 /* Private function prototypes -----------------------------------------------*/
@@ -75,6 +79,9 @@ static void CPU_CACHE_Enable(void);
 /* Private functions ---------------------------------------------------------*/
 
 void Practice_I2C_Init();
+void I2C_Practice_Interrupt();
+void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c);
+void I2C1_EV_IRQHandler();
 
 /**
  * @brief  Main program
@@ -120,20 +127,16 @@ int main(void) {
 
 	BSP_COM_Init(COM1, &uart_handle);
 
+	HAL_NVIC_SetPriority(I2C1_EV_IRQn, 0x0F, 0x00);
+	HAL_NVIC_EnableIRQ(I2C1_EV_IRQn);
+
 	Practice_I2C_Init();
 
 	printf("\n-----------------WELCOME-----------------\r\n");
 	printf("**********in STATIC interrupts WS**********\r\n\n");
 
-	uint8_t transmit = 0;
-	uint8_t receive = 0;
-	int counter = 0;
-
 	while (1) {
-		counter ++;
-		HAL_I2C_Master_Transmit(&I2cHandle, 0b1001000<<1, &transmit, 1, 0xFFFF);
-		HAL_I2C_Master_Receive(&I2cHandle, 0b1001000<<1, &receive, 1, 0xFFFF);
-		printf("Temperature reading #%d. is: %i Celsius.\n", counter, receive);
+		I2C_Practice_Interrupt();
 		HAL_Delay(1000);
 	}
 }
@@ -156,6 +159,27 @@ void Practice_I2C_Init()
 	I2cHandle.Init.AddressingMode  = I2C_ADDRESSINGMODE_7BIT;
 
 	HAL_I2C_Init(&I2cHandle);
+}
+
+void I2C_Practice_Interrupt()
+{
+	HAL_I2C_Master_Transmit_IT(&I2cHandle, 0b1001000<<1, &transmit, 1);
+}
+
+void I2C1_EV_IRQHandler()
+{
+	HAL_I2C_EV_IRQHandler(&I2cHandle);
+}
+
+void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c)
+{
+	HAL_I2C_Master_Receive_IT(&I2cHandle, 0b1001000<<1, &receive, 1);
+}
+
+void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef *hi2c)
+{
+	counter++;
+	printf("Temperature reading #%d. is: %i Celsius.\n", counter, receive);
 }
 
 /**
