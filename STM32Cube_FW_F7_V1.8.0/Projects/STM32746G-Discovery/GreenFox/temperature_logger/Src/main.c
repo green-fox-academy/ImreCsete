@@ -67,7 +67,6 @@ I2C_HandleTypeDef I2cHandle;
 RTC_DateTypeDef dDate;
 RTC_TimeTypeDef dTime;
 
-int counter;
 uint8_t transmit = 0;
 uint8_t receive = 0;
 
