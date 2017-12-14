@@ -114,8 +114,6 @@ int main(void) {
     /**
      * Demo for sending date and time in every second
      */
-    RTC_DateTypeDef dDate;
-    RTC_TimeTypeDef dTime;
 
     HAL_NVIC_SetPriority(I2C1_EV_IRQn, 0x0F, 0x00);
     HAL_NVIC_EnableIRQ(I2C1_EV_IRQn);
