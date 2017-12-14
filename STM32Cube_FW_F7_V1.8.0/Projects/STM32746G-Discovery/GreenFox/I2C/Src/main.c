@@ -150,7 +150,7 @@ void Interrupt_Timer()
 	__HAL_RCC_TIM2_CLK_ENABLE();
 
 	TimHandle.Instance               = TIM2;
-	TimHandle.Init.Period            = 8000;
+	TimHandle.Init.Period            = 16000;
 	TimHandle.Init.Prescaler         = 6750;
 	TimHandle.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
 	TimHandle.Init.CounterMode 		 = TIM_COUNTERMODE_UP;
