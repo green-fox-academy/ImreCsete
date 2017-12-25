@@ -53,8 +53,9 @@
 /* Private variables ---------------------------------------------------------*/
 TIM_HandleTypeDef TimHandle;
 UART_HandleTypeDef uart_handle;
-GPIO_InitTypeDef C1;
-GPIO_InitTypeDef R1;
+GPIO_InitTypeDef Column;
+GPIO_InitTypeDef Row_1_3;
+GPIO_InitTypeDef Row_4_7;
 
 uint32_t counter = 0;
 
@@ -65,7 +66,8 @@ volatile uint32_t timIntPeriod;
 void Interrupt_Timer();
 void TIM2_IRQHandler();
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
-void C1_R1_Init();
+void Column_Init();
+void Row_Init();
 void C1_R1_On();
 void C1_R1_Off();
 
@@ -117,7 +119,8 @@ int main(void) {
 	 */
 
 	Interrupt_Timer();
-	C1_R1_Init();
+	Column_Init();
+	Row_Init();
 
 	while (1) {
 	}
@@ -155,35 +158,55 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	}
 }
 
-void C1_R1_Init()
+void Column_Init()
 {
-  __HAL_RCC_GPIOF_CLK_ENABLE();
+	__HAL_RCC_GPIOF_CLK_ENABLE();
 
-  C1.Pin = GPIO_PIN_10;
-  C1.Mode = GPIO_MODE_OUTPUT_PP;
-  C1.Pull = GPIO_PULLDOWN;
-  C1.Speed = GPIO_SPEED_HIGH;
+	Column.Pin = GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_8 | GPIO_PIN_9 | GPIO_PIN_10;
+	Column.Mode = GPIO_MODE_OUTPUT_PP;
+	Column.Pull = GPIO_PULLDOWN;
+	Column.Speed = GPIO_SPEED_HIGH;
 
-  HAL_GPIO_Init(GPIOF, &C1);
+	HAL_GPIO_Init(GPIOF, &Column);
+}
 
-  R1.Pin = GPIO_PIN_9;
-  R1.Mode = GPIO_MODE_OUTPUT_PP;
-  R1.Pull = GPIO_PULLUP;
-  R1.Speed = GPIO_SPEED_HIGH;
+void Row_Init()
+{
+	__HAL_RCC_GPIOA_CLK_ENABLE();
 
-  HAL_GPIO_Init(GPIOF, &R1);
+	Row_1_3.Pin = GPIO_PIN_0 | GPIO_PIN_8 | GPIO_PIN_15;
+	Row_1_3.Mode = GPIO_MODE_OUTPUT_PP;
+	Row_1_3.Pull = GPIO_PULLUP;
+	Row_1_3.Speed = GPIO_SPEED_HIGH;
+
+	HAL_GPIO_Init(GPIOA, &Row_1_3);
+
+	__HAL_RCC_GPIOB_CLK_ENABLE();
+
+	Row_4_7.Pin = GPIO_PIN_8 | GPIO_PIN_9 | GPIO_PIN_14 | GPIO_PIN_15;
+	Row_4_7.Mode = GPIO_MODE_OUTPUT_PP;
+	Row_4_7.Pull = GPIO_PULLUP;
+	Row_4_7.Speed = GPIO_SPEED_HIGH;
+
+	HAL_GPIO_Init(GPIOB, &Row_4_7);
 }
 
 void C1_R1_On()
 {
-	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_9, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
 }
 
 void C1_R1_Off()
 {
-	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_RESET);
-	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_9, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
 }
 /**
  * @brief  Retargets the C library printf function to the USART.
