@@ -57,6 +57,7 @@ GPIO_InitTypeDef Column;
 GPIO_InitTypeDef Row_1_3;
 GPIO_InitTypeDef Row_4_7;
 
+uint32_t delay = 1;
 uint32_t counter = 0;
 
 volatile uint32_t timIntPeriod;
@@ -68,8 +69,92 @@ void TIM2_IRQHandler();
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
 void Column_Init();
 void Row_Init();
-void C1_R1_On();
-void C1_R1_Off();
+void C1_On();
+void C2_On();
+void C3_On();
+void C4_On();
+void C5_On();
+void C1_Off();
+void C2_Off();
+void C3_Off();
+void C4_Off();
+void C5_Off();
+void R1_On();
+void R2_On();
+void R3_On();
+void R4_On();
+void R5_On();
+void R6_On();
+void R7_On();
+void R1_Off();
+void R2_Off();
+void R3_Off();
+void R4_Off();
+void R5_Off();
+void R6_Off();
+void R7_Off();
+void Toggle_LED01();
+void Toggle_LED02();
+void Toggle_LED03();
+void Toggle_LED04();
+void Toggle_LED05();
+void Toggle_LED06();
+void Toggle_LED07();
+void Toggle_LED08();
+void Toggle_LED09();
+void Toggle_LED10();
+void Toggle_LED11();
+void Toggle_LED12();
+void Toggle_LED13();
+void Toggle_LED14();
+void Toggle_LED15();
+void Toggle_LED16();
+void Toggle_LED17();
+void Toggle_LED18();
+void Toggle_LED19();
+void Toggle_LED20();
+void Toggle_LED21();
+void Toggle_LED22();
+void Toggle_LED23();
+void Toggle_LED24();
+void Toggle_LED25();
+void Toggle_LED26();
+void Toggle_LED27();
+void Toggle_LED28();
+void Toggle_LED29();
+void Toggle_LED30();
+void Toggle_LED31();
+void Toggle_LED32();
+void Toggle_LED33();
+void Toggle_LED34();
+void Toggle_LED35();
+void Letter_A();
+void Letter_B();
+void Letter_C();
+void Letter_D();
+void Letter_E();
+void Letter_F();
+void Letter_G();
+void Letter_H();
+void Letter_I();
+void Letter_J();
+void Letter_K();
+void Letter_L();
+void Letter_M();
+void Letter_N();
+void Letter_O();
+void Letter_P();
+void Letter_Q();
+void Letter_R();
+void Letter_S();
+void Letter_T();
+void Letter_U();
+void Letter_V();
+void Letter_W();
+void Letter_X();
+void Letter_Y();
+void Letter_Z();
+
 
 #ifdef __GNUC__
 /* With GCC/RAISONANCE, small printf (option LD Linker->Libraries->Small printf
@@ -123,6 +208,7 @@ int main(void) {
 	Row_Init();
 
 	while (1) {
+		Letter_A();
 	}
 }
 
@@ -149,13 +235,7 @@ void TIM2_IRQHandler()
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-	counter++;
 
-	if (counter % 2 == 0) {
-		C1_R1_On();
-	} else {
-		C1_R1_Off();
-	}
 }
 
 void Column_Init()
@@ -191,9 +271,58 @@ void Row_Init()
 	HAL_GPIO_Init(GPIOB, &Row_4_7);
 }
 
-void C1_R1_On()
+void C1_On()
 {
 	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_SET);
+}
+
+void C2_On()
+{
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_7, GPIO_PIN_SET);
+}
+
+void C3_On()
+{
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_8, GPIO_PIN_SET);
+}
+
+void C4_On()
+{
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_9, GPIO_PIN_SET);
+}
+
+void C5_On()
+{
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_SET);
+}
+
+void C1_Off()
+{
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_RESET);
+}
+
+void C2_Off()
+{
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_7, GPIO_PIN_RESET);
+}
+
+void C3_Off()
+{
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_8, GPIO_PIN_RESET);
+}
+
+void C4_Off()
+{
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_9, GPIO_PIN_RESET);
+}
+
+void C5_Off()
+{
+	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_10, GPIO_PIN_RESET);
+}
+
+void R1_On()
+{
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_SET);
@@ -203,11 +332,602 @@ void C1_R1_On()
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
 }
 
-void C1_R1_Off()
+void R2_On()
 {
-	HAL_GPIO_WritePin(GPIOF, GPIO_PIN_6, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
+}
+
+void R3_On()
+{
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
+}
+
+void R4_On()
+{
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
+}
+
+void R5_On()
+{
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
+}
+
+void R6_On()
+{
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
+}
+
+void R7_On()
+{
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_RESET);
+}
+
+void R1_Off()
+{
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_0, GPIO_PIN_SET);
 }
+
+void R2_Off()
+{
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+}
+
+void R3_Off()
+{
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_15, GPIO_PIN_SET);
+}
+
+void R4_Off()
+{
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_SET);
+}
+
+void R5_Off()
+{
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
+}
+
+void R6_Off()
+{
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);
+}
+
+void R7_Off()
+{
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_15, GPIO_PIN_SET);
+}
+
+void Toggle_LED01()
+{
+	C1_On();
+	R1_On();
+	HAL_Delay(delay);
+	C1_Off();
+	R1_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED02()
+{
+	C2_On();
+	R1_On();
+	HAL_Delay(delay);
+	C2_Off();
+	R1_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED03()
+{
+	C3_On();
+	R1_On();
+	HAL_Delay(delay);
+	C3_Off();
+	R1_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED04()
+{
+	C4_On();
+	R1_On();
+	HAL_Delay(delay);
+	C4_Off();
+	R1_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED05()
+{
+	C5_On();
+	R1_On();
+	HAL_Delay(delay);
+	C5_Off();
+	R1_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED06()
+{
+	C1_On();
+	R2_On();
+	HAL_Delay(delay);
+	C1_Off();
+	R2_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED07()
+{
+	C2_On();
+	R2_On();
+	HAL_Delay(delay);
+	C2_Off();
+	R2_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED08()
+{
+	C3_On();
+	R2_On();
+	HAL_Delay(delay);
+	C3_Off();
+	R2_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED09()
+{
+	C4_On();
+	R2_On();
+	HAL_Delay(delay);
+	C4_Off();
+	R2_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED10()
+{
+	C5_On();
+	R2_On();
+	HAL_Delay(delay);
+	C5_Off();
+	R2_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED11()
+{
+	C1_On();
+	R3_On();
+	HAL_Delay(delay);
+	C1_Off();
+	R3_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED12()
+{
+	C2_On();
+	R3_On();
+	HAL_Delay(delay);
+	C2_Off();
+	R3_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED13()
+{
+	C3_On();
+	R3_On();
+	HAL_Delay(delay);
+	C3_Off();
+	R3_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED14()
+{
+	C4_On();
+	R3_On();
+	HAL_Delay(delay);
+	C4_Off();
+	R3_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED15()
+{
+	C5_On();
+	R3_On();
+	HAL_Delay(delay);
+	C5_Off();
+	R3_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED16()
+{
+	C1_On();
+	R4_On();
+	HAL_Delay(delay);
+	C1_Off();
+	R4_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED17()
+{
+	C2_On();
+	R4_On();
+	HAL_Delay(delay);
+	C2_Off();
+	R4_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED18()
+{
+	C3_On();
+	R4_On();
+	HAL_Delay(delay);
+	C3_Off();
+	R4_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED19()
+{
+	C4_On();
+	R4_On();
+	HAL_Delay(delay);
+	C4_Off();
+	R4_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED20()
+{
+	C5_On();
+	R4_On();
+	HAL_Delay(delay);
+	C5_Off();
+	R4_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED21()
+{
+	C1_On();
+	R5_On();
+	HAL_Delay(delay);
+	C1_Off();
+	R5_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED22()
+{
+	C2_On();
+	R5_On();
+	HAL_Delay(delay);
+	C2_Off();
+	R5_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED23()
+{
+	C3_On();
+	R5_On();
+	HAL_Delay(delay);
+	C3_Off();
+	R5_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED24()
+{
+	C4_On();
+	R5_On();
+	HAL_Delay(delay);
+	C4_Off();
+	R5_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED25()
+{
+	C5_On();
+	R5_On();
+	HAL_Delay(delay);
+	C5_Off();
+	R5_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED26()
+{
+	C1_On();
+	R6_On();
+	HAL_Delay(delay);
+	C1_Off();
+	R6_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED27()
+{
+	C2_On();
+	R6_On();
+	HAL_Delay(delay);
+	C2_Off();
+	R6_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED28()
+{
+	C3_On();
+	R6_On();
+	HAL_Delay(delay);
+	C3_Off();
+	R6_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED29()
+{
+	C4_On();
+	R6_On();
+	HAL_Delay(delay);
+	C4_Off();
+	R6_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED30()
+{
+	C5_On();
+	R6_On();
+	HAL_Delay(delay);
+	C5_Off();
+	R6_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED31()
+{
+	C1_On();
+	R7_On();
+	HAL_Delay(delay);
+	C1_Off();
+	R7_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED32()
+{
+	C2_On();
+	R7_On();
+	HAL_Delay(delay);
+	C2_Off();
+	R7_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED33()
+{
+	C3_On();
+	R7_On();
+	HAL_Delay(delay);
+	C3_Off();
+	R7_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED34()
+{
+	C4_On();
+	R7_On();
+	HAL_Delay(delay);
+	C4_Off();
+	R7_Off();
+	HAL_Delay(delay);
+}
+
+void Toggle_LED35()
+{
+	C5_On();
+	R7_On();
+	HAL_Delay(delay);
+	C5_Off();
+	R7_Off();
+	HAL_Delay(delay);
+}
+
+void Letter_A()
+{
+	Toggle_LED03();
+	Toggle_LED07();
+	Toggle_LED09();
+	Toggle_LED11();
+	Toggle_LED15();
+	Toggle_LED16();
+	Toggle_LED17();
+	Toggle_LED18();
+	Toggle_LED19();
+	Toggle_LED20();
+	Toggle_LED21();
+	Toggle_LED25();
+	Toggle_LED26();
+	Toggle_LED30();
+	Toggle_LED31();
+	Toggle_LED35();
+}
+
+void Letter_B()
+{
+
+}
+
+void Letter_C()
+{
+
+}
+
+void Letter_D()
+{
+
+}
+
+void Letter_E()
+{
+
+}
+
+void Letter_F()
+{
+
+}
+
+void Letter_G()
+{
+
+}
+
+void Letter_H()
+{
+
+}
+
+void Letter_I()
+{
+
+}
+
+void Letter_J()
+{
+
+}
+
+void Letter_K()
+{
+
+}
+
+void Letter_L()
+{
+
+}
+
+void Letter_M()
+{
+
+}
+
+void Letter_N()
+{
+
+}
+
+void Letter_O()
+{
+
+}
+
+void Letter_P()
+{
+
+}
+
+void Letter_Q()
+{
+
+}
+
+void Letter_R()
+{
+
+}
+
+void Letter_S()
+{
+
+}
+
+void Letter_T()
+{
+
+}
+
+void Letter_U()
+{
+
+}
+
+void Letter_V()
+{
+
+}
+
+void Letter_W()
+{
+
+}
+
+void Letter_X()
+{
+
+}
+
+void Letter_Y()
+{
+
+}
+
+void Letter_Z()
+{
+
+}
+
 /**
  * @brief  Retargets the C library printf function to the USART.
  * @param  None
