@@ -208,7 +208,7 @@ int main(void) {
 	Row_Init();
 
 	while (1) {
-		Letter_J();
+		Letter_S();
 	}
 }
 
@@ -975,47 +975,176 @@ void Letter_J()
 
 void Letter_K()
 {
-
+	Toggle_LED01();
+	Toggle_LED05();
+	Toggle_LED06();
+	Toggle_LED09();
+	Toggle_LED11();
+	Toggle_LED13();
+	Toggle_LED16();
+	Toggle_LED17();
+	Toggle_LED21();
+	Toggle_LED23();
+	Toggle_LED26();
+	Toggle_LED29();
+	Toggle_LED31();
+	Toggle_LED35();
 }
 
 void Letter_L()
 {
-
+	Toggle_LED01();
+	Toggle_LED06();
+	Toggle_LED11();
+	Toggle_LED16();
+	Toggle_LED21();
+	Toggle_LED26();
+	Toggle_LED31();
+	Toggle_LED32();
+	Toggle_LED33();
+	Toggle_LED34();
+	Toggle_LED35();
 }
 
 void Letter_M()
 {
-
+	Toggle_LED01();
+	Toggle_LED05();
+	Toggle_LED06();
+	Toggle_LED07();
+	Toggle_LED09();
+	Toggle_LED10();
+	Toggle_LED11();
+	Toggle_LED13();
+	Toggle_LED15();
+	Toggle_LED16();
+	Toggle_LED20();
+	Toggle_LED21();
+	Toggle_LED25();
+	Toggle_LED26();
+	Toggle_LED30();
+	Toggle_LED31();
+	Toggle_LED35();
 }
 
 void Letter_N()
 {
-
+	Toggle_LED01();
+	Toggle_LED05();
+	Toggle_LED06();
+	Toggle_LED10();
+	Toggle_LED11();
+	Toggle_LED12();
+	Toggle_LED15();
+	Toggle_LED16();
+	Toggle_LED18();
+	Toggle_LED20();
+	Toggle_LED21();
+	Toggle_LED24();
+	Toggle_LED25();
+	Toggle_LED26();
+	Toggle_LED30();
+	Toggle_LED31();
+	Toggle_LED35();
 }
 
 void Letter_O()
 {
-
+	Toggle_LED02();
+	Toggle_LED03();
+	Toggle_LED04();
+	Toggle_LED06();
+	Toggle_LED10();
+	Toggle_LED11();
+	Toggle_LED15();
+	Toggle_LED16();
+	Toggle_LED20();
+	Toggle_LED21();
+	Toggle_LED25();
+	Toggle_LED26();
+	Toggle_LED30();
+	Toggle_LED32();
+	Toggle_LED33();
+	Toggle_LED34();
 }
 
 void Letter_P()
 {
-
+	Toggle_LED01();
+	Toggle_LED02();
+	Toggle_LED03();
+	Toggle_LED04();
+	Toggle_LED06();
+	Toggle_LED10();
+	Toggle_LED11();
+	Toggle_LED15();
+	Toggle_LED16();
+	Toggle_LED17();
+	Toggle_LED18();
+	Toggle_LED19();
+	Toggle_LED21();
+	Toggle_LED26();
+	Toggle_LED31();
 }
 
 void Letter_Q()
 {
-
+	Toggle_LED02();
+	Toggle_LED03();
+	Toggle_LED04();
+	Toggle_LED06();
+	Toggle_LED10();
+	Toggle_LED11();
+	Toggle_LED15();
+	Toggle_LED16();
+	Toggle_LED20();
+	Toggle_LED21();
+	Toggle_LED23();
+	Toggle_LED25();
+	Toggle_LED26();
+	Toggle_LED29();
+	Toggle_LED32();
+	Toggle_LED33();
+	Toggle_LED35();
 }
 
 void Letter_R()
 {
-
+	Toggle_LED01();
+	Toggle_LED02();
+	Toggle_LED03();
+	Toggle_LED04();
+	Toggle_LED06();
+	Toggle_LED10();
+	Toggle_LED11();
+	Toggle_LED15();
+	Toggle_LED16();
+	Toggle_LED17();
+	Toggle_LED18();
+	Toggle_LED19();
+	Toggle_LED21();
+	Toggle_LED23();
+	Toggle_LED26();
+	Toggle_LED29();
+	Toggle_LED31();
+	Toggle_LED35();
 }
 
 void Letter_S()
 {
-
+	Toggle_LED02();
+	Toggle_LED03();
+	Toggle_LED04();
+	Toggle_LED06();
+	Toggle_LED10();
+	Toggle_LED12();
+	Toggle_LED18();
+	Toggle_LED24();
+	Toggle_LED26();
+	Toggle_LED30();
+	Toggle_LED32();
+	Toggle_LED33();
+	Toggle_LED34();
 }
 
 void Letter_T()
