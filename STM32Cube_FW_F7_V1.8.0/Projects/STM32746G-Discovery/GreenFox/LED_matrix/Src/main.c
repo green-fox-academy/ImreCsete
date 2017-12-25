@@ -57,7 +57,7 @@ GPIO_InitTypeDef Column;
 GPIO_InitTypeDef Row_1_3;
 GPIO_InitTypeDef Row_4_7;
 
-uint32_t delay = 1;
+uint32_t delay = 0;
 uint32_t counter = 0;
 
 volatile uint32_t timIntPeriod;
@@ -208,7 +208,7 @@ int main(void) {
 	Row_Init();
 
 	while (1) {
-		Letter_A();
+		Letter_J();
 	}
 }
 
@@ -805,47 +805,172 @@ void Letter_A()
 
 void Letter_B()
 {
-
+	Toggle_LED01();
+	Toggle_LED02();
+	Toggle_LED03();
+	Toggle_LED06();
+	Toggle_LED09();
+	Toggle_LED11();
+	Toggle_LED14();
+	Toggle_LED16();
+	Toggle_LED17();
+	Toggle_LED18();
+	Toggle_LED19();
+	Toggle_LED21();
+	Toggle_LED25();
+	Toggle_LED26();
+	Toggle_LED30();
+	Toggle_LED31();
+	Toggle_LED32();
+	Toggle_LED33();
+	Toggle_LED34();
 }
 
 void Letter_C()
 {
-
+	Toggle_LED02();
+	Toggle_LED03();
+	Toggle_LED04();
+	Toggle_LED06();
+	Toggle_LED10();
+	Toggle_LED11();
+	Toggle_LED16();
+	Toggle_LED21();
+	Toggle_LED26();
+	Toggle_LED30();
+	Toggle_LED32();
+	Toggle_LED33();
+	Toggle_LED34();
 }
 
 void Letter_D()
 {
-
+	Toggle_LED01();
+	Toggle_LED02();
+	Toggle_LED03();
+	Toggle_LED06();
+	Toggle_LED09();
+	Toggle_LED11();
+	Toggle_LED15();
+	Toggle_LED16();
+	Toggle_LED20();
+	Toggle_LED21();
+	Toggle_LED25();
+	Toggle_LED26();
+	Toggle_LED29();
+	Toggle_LED31();
+	Toggle_LED32();
+	Toggle_LED33();
 }
 
 void Letter_E()
 {
-
+	Toggle_LED01();
+	Toggle_LED02();
+	Toggle_LED03();
+	Toggle_LED04();
+	Toggle_LED05();
+	Toggle_LED06();
+	Toggle_LED11();
+	Toggle_LED16();
+	Toggle_LED17();
+	Toggle_LED18();
+	Toggle_LED21();
+	Toggle_LED26();
+	Toggle_LED31();
+	Toggle_LED32();
+	Toggle_LED33();
+	Toggle_LED34();
+	Toggle_LED35();
 }
 
 void Letter_F()
 {
-
+	Toggle_LED01();
+	Toggle_LED02();
+	Toggle_LED03();
+	Toggle_LED04();
+	Toggle_LED05();
+	Toggle_LED06();
+	Toggle_LED11();
+	Toggle_LED16();
+	Toggle_LED17();
+	Toggle_LED18();
+	Toggle_LED21();
+	Toggle_LED26();
+	Toggle_LED31();
 }
 
 void Letter_G()
 {
-
+	Toggle_LED02();
+	Toggle_LED03();
+	Toggle_LED04();
+	Toggle_LED06();
+	Toggle_LED10();
+	Toggle_LED11();
+	Toggle_LED16();
+	Toggle_LED18();
+	Toggle_LED19();
+	Toggle_LED20();
+	Toggle_LED21();
+	Toggle_LED25();
+	Toggle_LED26();
+	Toggle_LED30();
+	Toggle_LED32();
+	Toggle_LED33();
+	Toggle_LED34();
 }
 
 void Letter_H()
 {
-
+	Toggle_LED01();
+	Toggle_LED05();
+	Toggle_LED06();
+	Toggle_LED10();
+	Toggle_LED11();
+	Toggle_LED15();
+	Toggle_LED16();
+	Toggle_LED17();
+	Toggle_LED18();
+	Toggle_LED19();
+	Toggle_LED20();
+	Toggle_LED21();
+	Toggle_LED25();
+	Toggle_LED26();
+	Toggle_LED30();
+	Toggle_LED31();
+	Toggle_LED35();
 }
 
 void Letter_I()
 {
-
+	Toggle_LED02();
+	Toggle_LED03();
+	Toggle_LED04();
+	Toggle_LED08();
+	Toggle_LED13();
+	Toggle_LED18();
+	Toggle_LED23();
+	Toggle_LED28();
+	Toggle_LED32();
+	Toggle_LED33();
+	Toggle_LED34();
 }
 
 void Letter_J()
 {
-
+	Toggle_LED05();
+	Toggle_LED10();
+	Toggle_LED15();
+	Toggle_LED20();
+	Toggle_LED21();
+	Toggle_LED25();
+	Toggle_LED26();
+	Toggle_LED30();
+	Toggle_LED32();
+	Toggle_LED33();
+	Toggle_LED34();
 }
 
 void Letter_K()
