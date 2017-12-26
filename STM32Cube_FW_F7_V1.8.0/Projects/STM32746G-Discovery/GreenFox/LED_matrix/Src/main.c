@@ -175,11 +175,9 @@ void Letter_Y();
 void Letter_Z();
 void Letter_a();
 void Letter_e();
-void Clear_Display();
 void Display_Balint();
 void Display_Benedek();
 void Display_Adel();
-
 
 #ifdef __GNUC__
 /* With GCC/RAISONANCE, small printf (option LD Linker->Libraries->Small printf
@@ -246,7 +244,7 @@ void Interrupt_Timer_Init()
 	__HAL_RCC_TIM2_CLK_ENABLE();
 
 	TimHandle.Instance               = TIM2;
-	TimHandle.Init.Period            = 8000;
+	TimHandle.Init.Period            = 16000;
 	TimHandle.Init.Prescaler         = 6750;
 	TimHandle.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
 	TimHandle.Init.CounterMode 		 = TIM_COUNTERMODE_UP;
@@ -269,7 +267,7 @@ void Interrupt_Timer2_Init()
 	__HAL_RCC_TIM3_CLK_ENABLE();
 
 	Tim2Handle.Instance               = TIM3;
-	Tim2Handle.Init.Period            = 8000;
+	Tim2Handle.Init.Period            = 16000;
 	Tim2Handle.Init.Prescaler         = 6750;
 	Tim2Handle.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
 	Tim2Handle.Init.CounterMode 	  = TIM_COUNTERMODE_UP;
@@ -292,7 +290,7 @@ void Interrupt_Timer3_Init()
 	__HAL_RCC_TIM4_CLK_ENABLE();
 
 	Tim3Handle.Instance               = TIM4;
-	Tim3Handle.Init.Period            = 8000;
+	Tim3Handle.Init.Period            = 16000;
 	Tim3Handle.Init.Prescaler         = 6750;
 	Tim3Handle.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
 	Tim3Handle.Init.CounterMode 	  = TIM_COUNTERMODE_UP;
@@ -409,7 +407,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		counter1++;
 	} else if (htim == &Tim2Handle) {
 		counter2++;
-	} else {
+	} else if (htim == &Tim3Handle) {
 		counter3++;
 	}
 }
@@ -417,17 +415,20 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 	if (GPIO_Pin == GPIO_PIN_11) {
-		Clear_Display();
+		counter2 = 0;
+		counter3 = 0;
 		Interrupt_Timer_Init();
 		Interrupt_Timer2_Deinit();
 		Interrupt_Timer3_Deinit();
 	} else if (GPIO_Pin == GPIO_PIN_6) {
-		Clear_Display();
+		counter1 = 0;
+		counter3 = 0;
 		Interrupt_Timer_Deinit();
 		Interrupt_Timer2_Init();
 		Interrupt_Timer3_Deinit();
 	} else if (GPIO_Pin == GPIO_PIN_1) {
-		Clear_Display();
+		counter1 = 0;
+		counter2 = 0;
 		Interrupt_Timer_Deinit();
 		Interrupt_Timer2_Deinit();
 		Interrupt_Timer3_Init();
@@ -1471,22 +1472,6 @@ void Letter_e()
 	Toggle_LED34();
 }
 
-void Clear_Display()
-{
-	void C1_Off();
-	void C2_Off();
-	void C3_Off();
-	void C4_Off();
-	void C5_Off();
-	void R1_Off();
-	void R2_Off();
-	void R3_Off();
-	void R4_Off();
-	void R5_Off();
-	void R6_Off();
-	void R7_Off();
-}
-
 void Display_Balint()
 {
 	switch (counter1) {
@@ -1509,7 +1494,6 @@ void Display_Balint()
 		Letter_T();
 		break;
 	case 7:
-		Clear_Display();
 		counter1 = 0;
 		break;
 	default:
@@ -1542,7 +1526,6 @@ void Display_Benedek()
 		Letter_K();
 		break;
 	case 8:
-		Clear_Display();
 		counter2 = 0;
 		break;
 	default:
@@ -1566,7 +1549,6 @@ void Display_Adel()
 		Letter_L();
 		break;
 	case 5:
-		Clear_Display();
 		counter3 = 0;
 		break;
 	default:
