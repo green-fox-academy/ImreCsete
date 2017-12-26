@@ -58,7 +58,8 @@ UART_HandleTypeDef uart_handle;
 GPIO_InitTypeDef Column;
 GPIO_InitTypeDef Row_1_3;
 GPIO_InitTypeDef Row_4_7;
-GPIO_InitTypeDef button;
+GPIO_InitTypeDef button1;
+GPIO_InitTypeDef button2;
 
 uint32_t delay = 0;
 uint32_t counter1 = 0;
@@ -75,14 +76,15 @@ void Interrupt_Timer2_Init();
 void Interrupt_Timer2_Deinit();
 void Interrupt_Timer3_Init();
 void Interrupt_Timer3_Deinit();
-void Button_Init();
+void Button1_Init();
+void Button2_Init();
 void Column_Init();
 void Row_Init();
 void TIM2_IRQHandler();
 void TIM3_IRQHandler();
 void TIM4_IRQHandler();
 void EXTI1_IRQHandler();
-void EXTI2_IRQHandler();
+void EXTI9_5_IRQHandler();
 void EXTI15_10_IRQHandler();
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
@@ -228,7 +230,9 @@ int main(void) {
 
 	Column_Init();
 	Row_Init();
-	Button_Init();
+	Button1_Init();
+	Button2_Init();
+	BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_EXTI);
 
 	while (1) {
 		Display_Balint();
@@ -255,8 +259,9 @@ void Interrupt_Timer_Init()
 
 void Interrupt_Timer_Deinit()
 {
-		HAL_TIM_Base_DeInit(&TimHandle);
-		HAL_TIM_Base_Stop_IT(&TimHandle);
+	__HAL_RCC_TIM2_CLK_DISABLE();
+	HAL_TIM_Base_DeInit(&TimHandle);
+	HAL_TIM_Base_Stop_IT(&TimHandle);
 }
 
 void Interrupt_Timer2_Init()
@@ -277,13 +282,14 @@ void Interrupt_Timer2_Init()
 
 void Interrupt_Timer2_Deinit()
 {
+	__HAL_RCC_TIM3_CLK_DISABLE();
 	HAL_TIM_Base_DeInit(&Tim2Handle);
 	HAL_TIM_Base_Stop_IT(&Tim2Handle);
 }
 
 void Interrupt_Timer3_Init()
 {
-	__HAL_RCC_TIM2_CLK_ENABLE();
+	__HAL_RCC_TIM4_CLK_ENABLE();
 
 	Tim3Handle.Instance               = TIM4;
 	Tim3Handle.Init.Period            = 8000;
@@ -299,28 +305,39 @@ void Interrupt_Timer3_Init()
 
 void Interrupt_Timer3_Deinit()
 {
+	__HAL_RCC_TIM4_CLK_DISABLE();
 	HAL_TIM_Base_DeInit(&Tim3Handle);
 	HAL_TIM_Base_Stop_IT(&Tim3Handle);
 }
 
-void Button_Init()
+void Button1_Init()
+{
+	__HAL_RCC_GPIOH_CLK_ENABLE();
+
+	button1.Pin = GPIO_PIN_6;
+	button1.Mode = GPIO_MODE_IT_RISING;
+	button1.Pull = GPIO_PULLUP;
+	button1.Speed = GPIO_SPEED_HIGH;
+
+	HAL_GPIO_Init(GPIOH, &button1);
+
+	HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0x0F, 0x00);
+	HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
+}
+
+void Button2_Init()
 {
 	__HAL_RCC_GPIOI_CLK_ENABLE();
 
-	button.Pin = GPIO_PIN_1 | GPIO_PIN_2;
-	button.Mode = GPIO_MODE_IT_RISING;
-	button.Pull = GPIO_PULLUP;
-	button.Speed = GPIO_SPEED_HIGH;
+	button2.Pin = GPIO_PIN_1;
+	button2.Mode = GPIO_MODE_IT_RISING;
+	button2.Pull = GPIO_PULLUP;
+	button2.Speed = GPIO_SPEED_HIGH;
 
-	HAL_GPIO_Init(GPIOI, &button);
-
-	BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_EXTI);
+	HAL_GPIO_Init(GPIOI, &button2);
 
 	HAL_NVIC_SetPriority(EXTI1_IRQn, 0x0F, 0x00);
 	HAL_NVIC_EnableIRQ(EXTI1_IRQn);
-
-	HAL_NVIC_SetPriority(EXTI2_IRQn, 0x0F, 0x00);
-	HAL_NVIC_EnableIRQ(EXTI2_IRQn);
 }
 
 void Column_Init()
@@ -376,9 +393,9 @@ void EXTI1_IRQHandler()
 	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_1);
 }
 
-void EXTI2_IRQHandler()
+void EXTI9_5_IRQHandler()
 {
-	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_2);
+	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_6);
 }
 
 void EXTI15_10_IRQHandler()
@@ -400,14 +417,17 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 	if (GPIO_Pin == GPIO_PIN_11) {
+		Clear_Display();
 		Interrupt_Timer_Init();
 		Interrupt_Timer2_Deinit();
 		Interrupt_Timer3_Deinit();
-	} else if (GPIO_Pin == GPIO_PIN_1) {
+	} else if (GPIO_Pin == GPIO_PIN_6) {
+		Clear_Display();
 		Interrupt_Timer_Deinit();
 		Interrupt_Timer2_Init();
 		Interrupt_Timer3_Deinit();
-	} else {
+	} else if (GPIO_Pin == GPIO_PIN_1) {
+		Clear_Display();
 		Interrupt_Timer_Deinit();
 		Interrupt_Timer2_Deinit();
 		Interrupt_Timer3_Init();
