@@ -81,7 +81,11 @@ void Row_Init();
 void TIM2_IRQHandler();
 void TIM3_IRQHandler();
 void TIM4_IRQHandler();
+void EXTI1_IRQHandler();
+void EXTI2_IRQHandler();
+void EXTI15_10_IRQHandler();
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
 void C1_On();
 void C2_On();
 void C3_On();
@@ -169,6 +173,7 @@ void Letter_Y();
 void Letter_Z();
 void Letter_a();
 void Letter_e();
+void Clear_Display();
 void Display_Balint();
 void Display_Benedek();
 void Display_Adel();
@@ -221,12 +226,14 @@ int main(void) {
 	/* Add your application code here
 	 */
 
-	Interrupt_Timer_Init();
 	Column_Init();
 	Row_Init();
+	Button_Init();
 
 	while (1) {
-		Letter_e();
+		Display_Balint();
+		Display_Benedek();
+		Display_Adel();
 	}
 }
 
@@ -306,6 +313,14 @@ void Button_Init()
 	button.Speed = GPIO_SPEED_HIGH;
 
 	HAL_GPIO_Init(GPIOI, &button);
+
+	BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_EXTI);
+
+	HAL_NVIC_SetPriority(EXTI1_IRQn, 0x0F, 0x00);
+	HAL_NVIC_EnableIRQ(EXTI1_IRQn);
+
+	HAL_NVIC_SetPriority(EXTI2_IRQn, 0x0F, 0x00);
+	HAL_NVIC_EnableIRQ(EXTI2_IRQn);
 }
 
 void Column_Init()
@@ -356,6 +371,21 @@ void TIM4_IRQHandler()
 	HAL_TIM_IRQHandler(&Tim3Handle);
 }
 
+void EXTI1_IRQHandler()
+{
+	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_1);
+}
+
+void EXTI2_IRQHandler()
+{
+	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_2);
+}
+
+void EXTI15_10_IRQHandler()
+{
+	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_11);
+}
+
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 	if (htim == &TimHandle) {
@@ -364,6 +394,23 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		counter2++;
 	} else {
 		counter3++;
+	}
+}
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+	if (GPIO_Pin == GPIO_PIN_11) {
+		Interrupt_Timer_Init();
+		Interrupt_Timer2_Deinit();
+		Interrupt_Timer3_Deinit();
+	} else if (GPIO_Pin == GPIO_PIN_1) {
+		Interrupt_Timer_Deinit();
+		Interrupt_Timer2_Init();
+		Interrupt_Timer3_Deinit();
+	} else {
+		Interrupt_Timer_Deinit();
+		Interrupt_Timer2_Deinit();
+		Interrupt_Timer3_Init();
 	}
 }
 
@@ -1404,19 +1451,107 @@ void Letter_e()
 	Toggle_LED34();
 }
 
+void Clear_Display()
+{
+	void C1_Off();
+	void C2_Off();
+	void C3_Off();
+	void C4_Off();
+	void C5_Off();
+	void R1_Off();
+	void R2_Off();
+	void R3_Off();
+	void R4_Off();
+	void R5_Off();
+	void R6_Off();
+	void R7_Off();
+}
+
 void Display_Balint()
 {
-
+	switch (counter1) {
+	case 1:
+		Letter_B();
+		break;
+	case 2:
+		Letter_a();
+		break;
+	case 3:
+		Letter_L();
+		break;
+	case 4:
+		Letter_I();
+		break;
+	case 5:
+		Letter_N();
+		break;
+	case 6:
+		Letter_T();
+		break;
+	case 7:
+		Clear_Display();
+		counter1 = 0;
+		break;
+	default:
+		break;
+	}
 }
 
 void Display_Benedek()
 {
-
+	switch (counter2) {
+	case 1:
+		Letter_B();
+		break;
+	case 2:
+		Letter_E();
+		break;
+	case 3:
+		Letter_N();
+		break;
+	case 4:
+		Letter_E();
+		break;
+	case 5:
+		Letter_D();
+		break;
+	case 6:
+		Letter_E();
+		break;
+	case 7:
+		Letter_K();
+		break;
+	case 8:
+		Clear_Display();
+		counter2 = 0;
+		break;
+	default:
+		break;
+	}
 }
 
 void Display_Adel()
 {
-
+	switch (counter3) {
+	case 1:
+		Letter_A();
+		break;
+	case 2:
+		Letter_D();
+		break;
+	case 3:
+		Letter_e();
+		break;
+	case 4:
+		Letter_L();
+		break;
+	case 5:
+		Clear_Display();
+		counter3 = 0;
+		break;
+	default:
+		break;
+	}
 }
 
 /**
