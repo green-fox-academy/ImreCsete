@@ -52,23 +52,34 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 TIM_HandleTypeDef TimHandle;
+TIM_HandleTypeDef Tim2Handle;
+TIM_HandleTypeDef Tim3Handle;
 UART_HandleTypeDef uart_handle;
 GPIO_InitTypeDef Column;
 GPIO_InitTypeDef Row_1_3;
 GPIO_InitTypeDef Row_4_7;
+GPIO_InitTypeDef button;
 
 uint32_t delay = 0;
-uint32_t counter = 0;
+uint32_t counter1 = 0;
+uint32_t counter2 = 0;
+uint32_t counter3 = 0;
 
 volatile uint32_t timIntPeriod;
 
 /* Private function prototypes -----------------------------------------------*/
 
-void Interrupt_Timer();
-void TIM2_IRQHandler();
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
+void Interrupt_Timer_Init();
+void Interrupt_Timer_Deinit();
+void Interrupt_Timer2_Init();
+void Interrupt_Timer2_Deinit();
+void Interrupt_Timer3_Init();
+void Interrupt_Timer3_Deinit();
+void Button_Init();
 void Column_Init();
 void Row_Init();
+void TIM2_IRQHandler();
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
 void C1_On();
 void C2_On();
 void C3_On();
@@ -156,6 +167,9 @@ void Letter_Y();
 void Letter_Z();
 void Letter_a();
 void Letter_e();
+void Display_Balint();
+void Display_Benedek();
+void Display_Adel();
 
 
 #ifdef __GNUC__
@@ -205,7 +219,7 @@ int main(void) {
 	/* Add your application code here
 	 */
 
-	Interrupt_Timer();
+	Interrupt_Timer_Init();
 	Column_Init();
 	Row_Init();
 
@@ -214,7 +228,7 @@ int main(void) {
 	}
 }
 
-void Interrupt_Timer()
+void Interrupt_Timer_Init()
 {
 	__HAL_RCC_TIM2_CLK_ENABLE();
 
@@ -230,14 +244,41 @@ void Interrupt_Timer()
 	HAL_NVIC_EnableIRQ(TIM2_IRQn);
 }
 
-void TIM2_IRQHandler()
+void Interrupt_Timer_Deinit()
 {
-	HAL_TIM_IRQHandler(&TimHandle);
+
 }
 
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+void Interrupt_Timer2_Init()
 {
 
+}
+
+void Interrupt_Timer2_Deinit()
+{
+
+}
+
+void Interrupt_Timer3_Init()
+{
+
+}
+
+void Interrupt_Timer3_Deinit()
+{
+
+}
+
+void Button_Init()
+{
+	__HAL_RCC_GPIOI_CLK_ENABLE();
+
+	button.Pin = GPIO_PIN_1 | GPIO_PIN_2;
+	button.Mode = GPIO_MODE_IT_RISING;
+	button.Pull = GPIO_PULLUP;
+	button.Speed = GPIO_SPEED_HIGH;
+
+	HAL_GPIO_Init(GPIOI, &button);
 }
 
 void Column_Init()
@@ -271,6 +312,16 @@ void Row_Init()
 	Row_4_7.Speed = GPIO_SPEED_HIGH;
 
 	HAL_GPIO_Init(GPIOB, &Row_4_7);
+}
+
+void TIM2_IRQHandler()
+{
+	HAL_TIM_IRQHandler(&TimHandle);
+}
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+
 }
 
 void C1_On()
@@ -1308,6 +1359,21 @@ void Letter_e()
 	Toggle_LED32();
 	Toggle_LED33();
 	Toggle_LED34();
+}
+
+void Display_Balint()
+{
+
+}
+
+void Display_Benedek()
+{
+
+}
+
+void Display_Adel()
+{
+
 }
 
 /**
