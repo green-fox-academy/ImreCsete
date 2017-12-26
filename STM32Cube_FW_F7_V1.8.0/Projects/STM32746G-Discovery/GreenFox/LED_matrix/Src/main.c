@@ -79,6 +79,8 @@ void Button_Init();
 void Column_Init();
 void Row_Init();
 void TIM2_IRQHandler();
+void TIM3_IRQHandler();
+void TIM4_IRQHandler();
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
 void C1_On();
 void C2_On();
@@ -246,27 +248,52 @@ void Interrupt_Timer_Init()
 
 void Interrupt_Timer_Deinit()
 {
-
+		HAL_TIM_Base_DeInit(&TimHandle);
+		HAL_TIM_Base_Stop_IT(&TimHandle);
 }
 
 void Interrupt_Timer2_Init()
 {
+	__HAL_RCC_TIM3_CLK_ENABLE();
 
+	Tim2Handle.Instance               = TIM3;
+	Tim2Handle.Init.Period            = 8000;
+	Tim2Handle.Init.Prescaler         = 6750;
+	Tim2Handle.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
+	Tim2Handle.Init.CounterMode 	  = TIM_COUNTERMODE_UP;
+	HAL_TIM_Base_Init(&Tim2Handle);
+	HAL_TIM_Base_Start_IT(&Tim2Handle);
+
+	HAL_NVIC_SetPriority(TIM3_IRQn, 0x0F, 0x00);
+	HAL_NVIC_EnableIRQ(TIM3_IRQn);
 }
 
 void Interrupt_Timer2_Deinit()
 {
-
+	HAL_TIM_Base_DeInit(&Tim2Handle);
+	HAL_TIM_Base_Stop_IT(&Tim2Handle);
 }
 
 void Interrupt_Timer3_Init()
 {
+	__HAL_RCC_TIM2_CLK_ENABLE();
 
+	Tim3Handle.Instance               = TIM4;
+	Tim3Handle.Init.Period            = 8000;
+	Tim3Handle.Init.Prescaler         = 6750;
+	Tim3Handle.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
+	Tim3Handle.Init.CounterMode 	  = TIM_COUNTERMODE_UP;
+	HAL_TIM_Base_Init(&Tim3Handle);
+	HAL_TIM_Base_Start_IT(&Tim3Handle);
+
+	HAL_NVIC_SetPriority(TIM4_IRQn, 0x0F, 0x00);
+	HAL_NVIC_EnableIRQ(TIM4_IRQn);
 }
 
 void Interrupt_Timer3_Deinit()
 {
-
+	HAL_TIM_Base_DeInit(&Tim3Handle);
+	HAL_TIM_Base_Stop_IT(&Tim3Handle);
 }
 
 void Button_Init()
@@ -319,9 +346,25 @@ void TIM2_IRQHandler()
 	HAL_TIM_IRQHandler(&TimHandle);
 }
 
+void TIM3_IRQHandler()
+{
+	HAL_TIM_IRQHandler(&Tim2Handle);
+}
+
+void TIM4_IRQHandler()
+{
+	HAL_TIM_IRQHandler(&Tim3Handle);
+}
+
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-
+	if (htim == &TimHandle) {
+		counter1++;
+	} else if (htim == &Tim2Handle) {
+		counter2++;
+	} else {
+		counter3++;
+	}
 }
 
 void C1_On()
