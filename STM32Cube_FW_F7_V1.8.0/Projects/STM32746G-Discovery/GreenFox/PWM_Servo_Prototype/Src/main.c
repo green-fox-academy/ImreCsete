@@ -97,9 +97,12 @@ int main(void) {
 	SystemClock_Config();
 	Servo_Init();
 	Timer_Init();
+	Button_Interrupt_Init();
 
 	while (1) {
+
 		Z_Axis();
+
 	}
 }
 
@@ -110,7 +113,6 @@ void Servo_Init()
 	Servo.Pin = GPIO_PIN_8;
 	Servo.Mode = GPIO_MODE_AF_PP;
 	Servo.Speed = GPIO_SPEED_HIGH;
-	Servo.Pull = GPIO_NOPULL;
 	Servo.Alternate = GPIO_AF1_TIM1;
 
 	HAL_GPIO_Init(GPIOA, &Servo);
@@ -121,8 +123,8 @@ void Timer_Init()
 	__HAL_RCC_TIM1_CLK_ENABLE();
 
 	TimHandle.Instance               = TIM1;
-	TimHandle.Init.Period            = 8000 - 1;
-	TimHandle.Init.Prescaler         = 135 - 1;
+	TimHandle.Init.Period            = 100 - 1;
+	TimHandle.Init.Prescaler         = 43200 - 1;
 	TimHandle.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
 	TimHandle.Init.CounterMode 		 = TIM_COUNTERMODE_UP;
 
@@ -151,16 +153,14 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
 void Z_Axis()
 {
-	switch(counter) {
-	case 1:
-		TIM1->CCR1 = 800;
-		break;
-	case 2:
-		TIM1->CCR1 = 400;
-		counter = 0;
-		break;
-	default:
-		break;
+	if (counter % 2 == 0) {
+		TIM1->CCR1 = 4;
+		HAL_Delay(400);
+		TIM1->CCR1 = 0;
+	} else {
+		TIM1->CCR1 = 12;
+		HAL_Delay(400);
+		TIM1->CCR1 = 0;
 	}
 }
 
