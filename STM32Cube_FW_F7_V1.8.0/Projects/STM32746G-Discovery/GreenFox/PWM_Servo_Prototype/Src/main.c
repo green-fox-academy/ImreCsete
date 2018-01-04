@@ -108,23 +108,23 @@ int main(void) {
 
 void Servo_Init()
 {
-	__HAL_RCC_GPIOA_CLK_ENABLE();
+	__HAL_RCC_GPIOF_CLK_ENABLE();
 
 	Servo.Pin = GPIO_PIN_8;
 	Servo.Mode = GPIO_MODE_AF_PP;
 	Servo.Speed = GPIO_SPEED_HIGH;
-	Servo.Alternate = GPIO_AF1_TIM1;
+	Servo.Alternate = GPIO_AF9_TIM13;
 
-	HAL_GPIO_Init(GPIOA, &Servo);
+	HAL_GPIO_Init(GPIOF, &Servo);
 }
 
 void Timer_Init()
 {
-	__HAL_RCC_TIM1_CLK_ENABLE();
+	__HAL_RCC_TIM13_CLK_ENABLE();
 
-	TimHandle.Instance               = TIM1;
+	TimHandle.Instance               = TIM13;
 	TimHandle.Init.Period            = 100 - 1;
-	TimHandle.Init.Prescaler         = 43200 - 1;
+	TimHandle.Init.Prescaler         = 21600 - 1;
 	TimHandle.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
 	TimHandle.Init.CounterMode 		 = TIM_COUNTERMODE_UP;
 
@@ -153,14 +153,22 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
 void Z_Axis()
 {
-	if (counter % 2 == 0) {
-		TIM1->CCR1 = 4;
-		HAL_Delay(400);
-		TIM1->CCR1 = 0;
-	} else {
-		TIM1->CCR1 = 12;
-		HAL_Delay(400);
-		TIM1->CCR1 = 0;
+	switch (counter) {
+		case 0:
+			TIM13->CCR1 = 4; // Up if cable is siding Y stepper motor
+			HAL_Delay(400);
+			TIM13->CCR1 = 0;
+			break;
+		case 1:
+			TIM13->CCR1 = 12; // Down if cable is siding Y stepper motor
+			HAL_Delay(400);
+			TIM13->CCR1 = 0;
+			break;
+		case 2:
+			counter = 0;
+			break;
+		default:
+			break;
 	}
 }
 
