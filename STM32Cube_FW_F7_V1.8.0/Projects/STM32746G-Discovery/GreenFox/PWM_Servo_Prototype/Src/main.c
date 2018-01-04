@@ -52,11 +52,22 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 UART_HandleTypeDef uart_handle;
+GPIO_InitTypeDef Servo;
+TIM_HandleTypeDef TimHandle;
+TIM_OC_InitTypeDef sConfig;
+
+uint32_t counter = 0;
 
 volatile uint32_t timIntPeriod;
 
 /* Private function prototypes -----------------------------------------------*/
 
+void Servo_Init();
+void Timer_Init();
+void Button_Interrupt_Init();
+void EXTI15_10_IRQHandler();
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
+void Z_Axis();
 
 #ifdef __GNUC__
 /* With GCC/RAISONANCE, small printf (option LD Linker->Libraries->Small printf
@@ -79,33 +90,77 @@ static void CPU_CACHE_Enable(void);
  * @retval None
  */
 int main(void) {
-	/* This project template calls firstly two functions in order to configure MPU feature
-	 and to enable the CPU Cache, respectively MPU_Config() and CPU_CACHE_Enable().
-	 These functions are provided as template implementation that User may integrate
-	 in his application, to enhance the performance in case of use of AXI interface
-	 with several masters. */
 
-	/* Configure the MPU attributes as Write Through */
 	MPU_Config();
-
-	/* Enable the CPU Cache */
 	CPU_CACHE_Enable();
-
-	/* STM32F7xx HAL library initialization:
-	 - Configure the Flash ART accelerator on ITCM interface
-	 - Configure the Systick to generate an interrupt each 1 msec
-	 - Set NVIC Group Priority to 4
-	 - Low Level Initialization
-	 */
 	HAL_Init();
-
-	/* Configure the System clock to have a frequency of 216 MHz */
 	SystemClock_Config();
-
-	/* Add your application code here
-	 */
+	Servo_Init();
+	Timer_Init();
 
 	while (1) {
+		Z_Axis();
+	}
+}
+
+void Servo_Init()
+{
+	__HAL_RCC_GPIOA_CLK_ENABLE();
+
+	Servo.Pin = GPIO_PIN_8;
+	Servo.Mode = GPIO_MODE_AF_PP;
+	Servo.Speed = GPIO_SPEED_HIGH;
+	Servo.Pull = GPIO_NOPULL;
+	Servo.Alternate = GPIO_AF1_TIM1;
+
+	HAL_GPIO_Init(GPIOA, &Servo);
+}
+
+void Timer_Init()
+{
+	__HAL_RCC_TIM1_CLK_ENABLE();
+
+	TimHandle.Instance               = TIM1;
+	TimHandle.Init.Period            = 8000 - 1;
+	TimHandle.Init.Prescaler         = 135 - 1;
+	TimHandle.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
+	TimHandle.Init.CounterMode 		 = TIM_COUNTERMODE_UP;
+
+	sConfig.OCMode = TIM_OCMODE_PWM1;
+	sConfig.Pulse = 0;
+
+	HAL_TIM_PWM_Init(&TimHandle);
+	HAL_TIM_PWM_ConfigChannel(&TimHandle, &sConfig, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Start(&TimHandle, TIM_CHANNEL_1);
+}
+
+void Button_Interrupt_Init()
+{
+	BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_EXTI);
+}
+
+void EXTI15_10_IRQHandler()
+{
+	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_11);
+}
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+	counter++;
+}
+
+void Z_Axis()
+{
+	switch(counter) {
+	case 1:
+		TIM1->CCR1 = 800;
+		break;
+	case 2:
+		TIM1->CCR1 = 400;
+		counter = 0;
+		break;
+	default:
+		break;
 	}
 }
 
