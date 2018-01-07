@@ -104,10 +104,10 @@ static void CPU_CACHE_Enable(void);
 
 void UART_Config(UART_HandleTypeDef *huart);
 int Ring_Buffer_Init(rb_descriptor *rbd, rb_attributes *attr); // init a ring buffer, pointer to a ring buffer descriptor, attr - ring buffer attributes
-int Ring_Buffer_Put(rb_descriptor rbd, const void *data); //  Add an element to the ring buffer, the ring buffer descriptor, data - the data to add
-int Ring_Buffer_Get(rb_descriptor rbd, void *data); //  * Get and remove an element from the ring buffer, rb - the ring buffer descriptor, data - pointer to store the data
-static int _ring_buffer_full(struct ring_buffer *rb);
-static int _ring_buffer_empty(struct ring_buffer *rb);
+int Ring_Buffer_Put(rb_descriptor rbd, const void *data); // Add an element to the ring buffer, the ring buffer descriptor, data - the data to add
+int Ring_Buffer_Get(rb_descriptor rbd, void *data); // Get and remove an element from the ring buffer, rb - the ring buffer descriptor, data - pointer to store the data
+static int Ring_Buffer_Full(struct ring_buffer *rb);
+static int Ring_Buffer_Empty(struct ring_buffer *rb);
 
 /**
  * @brief  Main program
@@ -144,7 +144,16 @@ int main(void) {
 	UART_Config(&UartHandle);
 	HAL_UART_Init(&UartHandle);
 
-	printf("UART test line.\n");
+	static rb_descriptor ring_buffer_test;
+	static char ring_buffer_array[16];
+
+	char *uart_test = "UART test line";
+
+	rb_attributes ring_buffer_test_attributes = {sizeof(ring_buffer_array[0]), (sizeof(ring_buffer_array) / sizeof(ring_buffer_array[0])), ring_buffer_array};
+
+	Ring_Buffer_Init(&ring_buffer_test, &ring_buffer_test_attributes);
+
+	Ring_Buffer_Put(ring_buffer_test, &uart_test);
 
 	while (1) {
 
@@ -209,7 +218,7 @@ int Ring_Buffer_Put(rb_descriptor rbd, const void *data)
 {
     int error = 0;
 
-    if ((rbd < RING_BUFFER_MAX) && (_ring_buffer_full(&_rb[rbd]) == 0)) {
+    if ((rbd < RING_BUFFER_MAX) && (Ring_Buffer_Full(&_rb[rbd]) == 0)) {
         const size_t offset = (_rb[rbd].head & (_rb[rbd].element_number - 1)) * _rb[rbd].element_size;
         memcpy(&(_rb[rbd].buffer_array[offset]), data, _rb[rbd].element_size);
         _rb[rbd].head++;
@@ -224,7 +233,7 @@ int Ring_Buffer_Get(rb_descriptor rbd, void *data)
 {
     int error = 0;
 
-    if ((rbd < RING_BUFFER_MAX) && (_ring_buffer_empty(&_rb[rbd]) == 0)) {
+    if ((rbd < RING_BUFFER_MAX) && (Ring_Buffer_Empty(&_rb[rbd]) == 0)) {
         const size_t offset = (_rb[rbd].tail & (_rb[rbd].element_number - 1)) * _rb[rbd].element_size;
         memcpy(data, &(_rb[rbd].buffer_array[offset]), _rb[rbd].element_size);
         _rb[rbd].tail++;
@@ -235,12 +244,12 @@ int Ring_Buffer_Get(rb_descriptor rbd, void *data)
     return error;
 }
 
-static int _ring_buffer_full(struct ring_buffer *rb)
+static int Ring_Buffer_Full(struct ring_buffer *rb)
 {
     return ((rb->head - rb->tail) == rb->element_number) ? 1 : 0;
 }
 
-static int _ring_buffer_empty(struct ring_buffer *rb)
+static int Ring_Buffer_Empty(struct ring_buffer *rb)
 {
     return ((rb->head - rb->tail) == 0U) ? 1 : 0;
 }
