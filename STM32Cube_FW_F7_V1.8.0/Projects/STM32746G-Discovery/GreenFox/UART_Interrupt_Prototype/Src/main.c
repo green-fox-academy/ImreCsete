@@ -37,6 +37,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "string.h"
 
 /** @addtogroup STM32F7xx_HAL_Examples
  * @{
@@ -55,15 +56,15 @@ UART_HandleTypeDef UartHandle;
 GPIO_InitTypeDef UartTransmit;
 GPIO_InitTypeDef UartRecieve;
 
-uint8_t rx_index = 0;
-uint8_t rx_data;
-uint8_t rx_buffer[20];
+uint8_t recieve_buffer[80];
+char* transmit_buffer = "transmit interrupt\n\r";
 
 /* Private function prototypes -----------------------------------------------*/
 
 void UART_Config(UART_HandleTypeDef *huart);
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);
-void Send_Data(uint8_t *input);
+void USART1_IRQHandler(void);
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart); // receive complete callback
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart); // transfer complete callback
 
 #ifdef __GNUC__
 /* With GCC/RAISONANCE, small printf (option LD Linker->Libraries->Small printf
@@ -98,12 +99,21 @@ int main(void) {
 
 	HAL_UART_Init(&UartHandle);
 
-	HAL_UART_IRQHandler(&UartHandle);
+	__HAL_UART_ENABLE_IT(&UartHandle, UART_IT_RXNE);
+	__HAL_UART_ENABLE_IT(&UartHandle, UART_IT_TC);
 
-	HAL_UART_Receive_IT(&UartHandle, &rx_data, 1);
+	HAL_NVIC_SetPriority(USART1_IRQn, 0x0F, 0x00);
+	HAL_NVIC_EnableIRQ(USART1_IRQn);
+
+	printf("UART interrupt test\n");
+
+	HAL_UART_Receive_IT(&UartHandle, recieve_buffer, 80);
 
 	while (1) {
-		Send_Data(&rx_buffer);
+		for (int i = 0; i < (sizeof(recieve_buffer)/sizeof(recieve_buffer[0])); i++) {
+			printf("%c", recieve_buffer[i]);
+		}
+		printf("\n");
 		HAL_Delay(1000);
 	}
 }
@@ -139,30 +149,23 @@ void UART_Config(UART_HandleTypeDef *huart) {
 	huart->Init.Mode = UART_MODE_TX_RX;
 }
 
+void USART1_IRQHandler(void)
+{
+	HAL_UART_IRQHandler(&UartHandle);
+}
+
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 	if (huart->Instance == USART1) {
-		if (rx_index == 0) {
-			for (int i = 0; i < sizeof(rx_buffer); i++) {
-				rx_buffer[i] = 0;
-			}
-		}
-	} else if (rx_data != '\0') { // signals end of transmission
-		rx_buffer[rx_index++] = rx_data;
-	} else {
-		rx_index = 0;
-		HAL_UART_Transmit(&UartHandle, rx_buffer, sizeof(rx_buffer), 100);
+		memset(&recieve_buffer[0], '\0', sizeof(recieve_buffer));
 	}
-	HAL_UART_Receive_IT(&UartHandle, &rx_data, 1);
 }
 
-void Send_Data(uint8_t *input)
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
 {
-	uint32_t i = 0;
-	while (input[i] != '\0') {
-		HAL_UART_Transmit(&UartHandle, (uint8_t *) &input[i], 1, 0xFFFF);
-		i++;
-	}
+	if (huart->Instance == USART1) {
+			memset(&recieve_buffer[0], '\0', sizeof(recieve_buffer));
+		}
 }
 
 /**
