@@ -53,6 +53,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 UART_HandleTypeDef UartHandle;
+DMA_HandleTypeDef DMAHandle;
 GPIO_InitTypeDef UartTransmit;
 GPIO_InitTypeDef UartRecieve;
 
@@ -62,9 +63,9 @@ char* transmit_buffer = "transmit interrupt\n\r";
 /* Private function prototypes -----------------------------------------------*/
 
 void UART_Config(UART_HandleTypeDef *huart);
+void DMA_Init(DMA_HandleTypeDef *hdma);
 void USART1_IRQHandler(void);
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart); // receive complete callback
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart); // transfer complete callback
+void UART_Buffer_Reset();
 
 #ifdef __GNUC__
 /* With GCC/RAISONANCE, small printf (option LD Linker->Libraries->Small printf
@@ -101,6 +102,7 @@ int main(void) {
 
 	__HAL_UART_ENABLE_IT(&UartHandle, UART_IT_RXNE);
 	__HAL_UART_ENABLE_IT(&UartHandle, UART_IT_TC);
+	__HAL_UART_ENABLE_IT(&UartHandle, UART_IT_IDLE);
 
 	HAL_NVIC_SetPriority(USART1_IRQn, 0x0F, 0x00);
 	HAL_NVIC_EnableIRQ(USART1_IRQn);
@@ -149,23 +151,29 @@ void UART_Config(UART_HandleTypeDef *huart) {
 	huart->Init.Mode = UART_MODE_TX_RX;
 }
 
+void DMA_Init(DMA_HandleTypeDef *hdma)
+{
+	__HAL_RCC_DMA1_CLK_ENABLE();
+
+    hdma->Instance = DMA1;
+    hdma->Init = DMA1_BASE;
+    hdma->Init.Direction = DMA_PERIPH_TO_MEMORY;
+    hdma->Init.PeriphInc = DMA_PINC_DISABLE;
+    hdma->Init.MemInc = DMA_MINC_ENABLE;
+    hdma->Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
+    hdma->Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
+    hdma->Init.Mode = DMA_CIRCULAR;
+    hdma->Init.Priority = DMA_PRIORITY_VERY_HIGH;
+}
+
 void USART1_IRQHandler(void)
 {
 	HAL_UART_IRQHandler(&UartHandle);
 }
 
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+void UART_Buffer_Reset()
 {
-	if (huart->Instance == USART1) {
 		memset(&recieve_buffer[0], '\0', sizeof(recieve_buffer));
-	}
-}
-
-void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
-{
-	if (huart->Instance == USART1) {
-			memset(&recieve_buffer[0], '\0', sizeof(recieve_buffer));
-		}
 }
 
 /**
