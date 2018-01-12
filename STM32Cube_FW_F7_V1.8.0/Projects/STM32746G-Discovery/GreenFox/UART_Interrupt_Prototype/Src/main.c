@@ -54,18 +54,19 @@
 /* Private variables ---------------------------------------------------------*/
 
 UART_HandleTypeDef UartHandle;
-DMA_HandleTypeDef DMAHandle;
 GPIO_InitTypeDef UartTransmit;
-GPIO_InitTypeDef UartRecieve;
+GPIO_InitTypeDef UartReceive;
 TIM_HandleTypeDef InterruptTimHandle;
 
-char g_code_buffer[100];
-volatile uint8_t event_counter = 0;
+char Tokenizer_G_Code_String[100];
+char G_Code_Buffer[100];
+uint8_t UART_IT_Data;
+uint8_t Receive_Index = 0;
+uint8_t event_counter = 0;
 
 /* Private function prototypes -----------------------------------------------*/
 
 void UART_Config(UART_HandleTypeDef *huart);
-void DMA_Init();
 void USART1_IRQHandler();
 void UART_Buffer_Reset();
 void Button_Interrupt_Init();
@@ -74,7 +75,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
 void Test_Timer_Init();
 void TIM2_IRQHandler();
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
-void DMA1_Stream1_IRQHandler();
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);
 
 #ifdef __GNUC__
@@ -110,23 +110,14 @@ int main(void) {
 
 	HAL_UART_Init(&UartHandle);
 
-	__HAL_UART_ENABLE_IT(&UartHandle, UART_IT_RXNE);
-	//__HAL_DMA_ENABLE_IT(&DMAHandle, )
-
 	printf("UART interrupt test\n");
 
 	Button_Interrupt_Init();
-	//DMA_Init();
-	HAL_UART_Receive_IT(&UartHandle, (uint8_t*)g_code_buffer, 80);
+	HAL_UART_Receive_IT(&UartHandle, &UART_IT_Data, 1);
 	Test_Timer_Init();
 
 	while (1) {
-		printf("Contents of g_code_buffer: ");
-			for (int i = 0; i < (sizeof(g_code_buffer)/sizeof(g_code_buffer[0])); i++) {
-					printf("%c", g_code_buffer[i]);
-			}
-		printf("\n");
-		HAL_Delay(1000);
+
 	}
 }
 
@@ -145,12 +136,12 @@ void UART_Config(UART_HandleTypeDef *huart) {
 
 	HAL_GPIO_Init(GPIOA, &UartTransmit);
 
-	UartRecieve.Pin 		= GPIO_PIN_7;
-	UartRecieve.Mode        = GPIO_MODE_AF_PP;
-	UartRecieve.Speed 		= GPIO_SPEED_FAST;
-	UartRecieve.Alternate   = GPIO_AF7_USART1;
+	UartReceive.Pin 		= GPIO_PIN_7;
+	UartReceive.Mode        = GPIO_MODE_AF_PP;
+	UartReceive.Speed 		= GPIO_SPEED_FAST;
+	UartReceive.Alternate   = GPIO_AF7_USART1;
 
-	HAL_GPIO_Init(GPIOB, &UartRecieve);
+	HAL_GPIO_Init(GPIOB, &UartReceive);
 
 	huart->Instance = USART1;
 	huart->Init.BaudRate = 115200;
@@ -162,30 +153,6 @@ void UART_Config(UART_HandleTypeDef *huart) {
 
 	HAL_NVIC_SetPriority(USART1_IRQn, 0x0F, 0x00);
 	HAL_NVIC_EnableIRQ(USART1_IRQn);
-
-}
-
-void DMA_Init()
-{
-	__HAL_RCC_DMA1_CLK_ENABLE();
-
-	DMAHandle.Instance = DMA1;
-	DMAHandle.Init.Channel = DMA1_Stream0;
-	DMAHandle.Init.Direction = DMA_PERIPH_TO_MEMORY;
-	DMAHandle.Init.PeriphInc = DMA_PINC_DISABLE;
-	DMAHandle.Init.MemInc = DMA_MINC_ENABLE;
-	DMAHandle.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
-	DMAHandle.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
-	DMAHandle.Init.Mode = DMA_CIRCULAR;
-	DMAHandle.Init.Priority = DMA_PRIORITY_VERY_HIGH;
-
-    HAL_DMA_Init(&DMAHandle);
-
-	__HAL_LINKDMA(&UartHandle, hdmarx, DMAHandle);
-
-	HAL_NVIC_SetPriority(DMA1_Stream0_IRQn, 0, 0);
-	HAL_NVIC_EnableIRQ(DMA1_Stream0_IRQn);
-
 }
 
 void USART1_IRQHandler()
@@ -195,8 +162,7 @@ void USART1_IRQHandler()
 
 void UART_Buffer_Reset()
 {
-	memset(&g_code_buffer[0], '\0', sizeof(g_code_buffer));
-	UartHandle.RxXferCount = 80;
+	memset(&G_Code_Buffer[0], '\0', sizeof(G_Code_Buffer));
 }
 
 void Button_Interrupt_Init()
@@ -211,7 +177,6 @@ void EXTI15_10_IRQHandler()
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-	event_counter++;
 	UART_Buffer_Reset();
 	printf("Buffer reset interrupt event: %d\n", event_counter);
 }
@@ -222,7 +187,7 @@ void Test_Timer_Init()
 
 	InterruptTimHandle.Instance               = TIM2;
 	InterruptTimHandle.Init.Period            = 16460;
-	InterruptTimHandle.Init.Prescaler         = (0xFFFF / 5);
+	InterruptTimHandle.Init.Prescaler         = (0xFFFF / 10);
 	InterruptTimHandle.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
 	InterruptTimHandle.Init.CounterMode 	  = TIM_COUNTERMODE_UP;
 	HAL_TIM_Base_Init(&InterruptTimHandle);
@@ -239,37 +204,39 @@ void TIM2_IRQHandler()
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-	printf("UART Receive Limit Counter: %d\n", UartHandle.RxXferCount);
+	printf("Contents of g_code_buffer: ");
+				for (int i = 0; i < (sizeof(G_Code_Buffer)/sizeof(G_Code_Buffer[0])); i++) {
+						printf("%c", G_Code_Buffer[i]);
+				}
+			printf("\n");
 
-	if (HAL_UART_GetState(&UartHandle) == HAL_UART_STATE_READY) {
-		printf("UART: Peripheral Initialized and ready for use.\n");
-	}
-
-	if (HAL_UART_GetState(&UartHandle) == HAL_UART_STATE_BUSY_RX) {
-			printf("UART: Data Transmission process is ongoing.\n");
-		}
-
-	if (HAL_UART_GetState(&UartHandle) == HAL_UART_STATE_BUSY_TX_RX) {
-			printf("UART: Data Transmission and Reception process is ongoing.\n");
-		}
-
-	if (HAL_UART_GetState(&UartHandle) == HAL_UART_STATE_TIMEOUT) {
-			printf("UART: Timeout state\n");
-		}
-
-	if (HAL_UART_GetState(&UartHandle) == HAL_UART_STATE_ERROR) {
-			printf("UART: Error.\n");
-		}
-}
-
-void DMA1_Stream1_IRQHandler()
-{
-  HAL_DMA_IRQHandler(&DMAHandle);
+	printf("Contents of Tokenizer_G_Code_String: ");
+				for (int i = 0; i < (sizeof(Tokenizer_G_Code_String)/sizeof(Tokenizer_G_Code_String[0])); i++) {
+						printf("%c", Tokenizer_G_Code_String[i]);
+				}
+			printf("\n");
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	printf("HAL_UART_RxCpltCallback Interrupt event\n");
+	printf("HAL_UART_RxCpltCallback event\n");
+
+	/*if (Receive_Index == 0) {
+		for (int i = 0; i < (sizeof(G_Code_Buffer)/sizeof(G_Code_Buffer[0])); i++) {
+			G_Code_Buffer[i] = 0;
+		}
+	}*/
+	 if (UART_IT_Data != '\n') {
+		G_Code_Buffer[Receive_Index++] = UART_IT_Data;
+
+		for (int i = 0; i < (sizeof(Tokenizer_G_Code_String)/sizeof(Tokenizer_G_Code_String[0])); i++) {
+			Tokenizer_G_Code_String[i] = G_Code_Buffer[i];
+		}
+	 }
+
+	printf("Receive_Index is at %d\n", Receive_Index);
+
+	HAL_UART_Receive_IT(&UartHandle, &UART_IT_Data, 1);
 }
 
 /**
