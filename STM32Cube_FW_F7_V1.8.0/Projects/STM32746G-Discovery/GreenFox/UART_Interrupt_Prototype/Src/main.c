@@ -38,6 +38,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "string.h"
+#include "stdio.h"
 
 /** @addtogroup STM32F7xx_HAL_Examples
  * @{
@@ -56,16 +57,25 @@ UART_HandleTypeDef UartHandle;
 DMA_HandleTypeDef DMAHandle;
 GPIO_InitTypeDef UartTransmit;
 GPIO_InitTypeDef UartRecieve;
+TIM_HandleTypeDef InterruptTimHandle;
 
-uint8_t recieve_buffer[80];
-char* transmit_buffer = "transmit interrupt\n\r";
+char g_code_buffer[100];
+volatile uint8_t event_counter = 0;
 
 /* Private function prototypes -----------------------------------------------*/
 
 void UART_Config(UART_HandleTypeDef *huart);
-void DMA_Init(DMA_HandleTypeDef *hdma);
-void USART1_IRQHandler(void);
+void DMA_Init();
+void USART1_IRQHandler();
 void UART_Buffer_Reset();
+void Button_Interrupt_Init();
+void EXTI15_10_IRQHandler();
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
+void Test_Timer_Init();
+void TIM2_IRQHandler();
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
+void DMA1_Stream1_IRQHandler();
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart);
 
 #ifdef __GNUC__
 /* With GCC/RAISONANCE, small printf (option LD Linker->Libraries->Small printf
@@ -101,20 +111,20 @@ int main(void) {
 	HAL_UART_Init(&UartHandle);
 
 	__HAL_UART_ENABLE_IT(&UartHandle, UART_IT_RXNE);
-	__HAL_UART_ENABLE_IT(&UartHandle, UART_IT_TC);
-	__HAL_UART_ENABLE_IT(&UartHandle, UART_IT_IDLE);
-
-	HAL_NVIC_SetPriority(USART1_IRQn, 0x0F, 0x00);
-	HAL_NVIC_EnableIRQ(USART1_IRQn);
+	//__HAL_DMA_ENABLE_IT(&DMAHandle, )
 
 	printf("UART interrupt test\n");
 
-	HAL_UART_Receive_IT(&UartHandle, recieve_buffer, 80);
+	Button_Interrupt_Init();
+	//DMA_Init();
+	HAL_UART_Receive_IT(&UartHandle, (uint8_t*)g_code_buffer, 80);
+	Test_Timer_Init();
 
 	while (1) {
-		for (int i = 0; i < (sizeof(recieve_buffer)/sizeof(recieve_buffer[0])); i++) {
-			printf("%c", recieve_buffer[i]);
-		}
+		printf("Contents of g_code_buffer: ");
+			for (int i = 0; i < (sizeof(g_code_buffer)/sizeof(g_code_buffer[0])); i++) {
+					printf("%c", g_code_buffer[i]);
+			}
 		printf("\n");
 		HAL_Delay(1000);
 	}
@@ -149,31 +159,117 @@ void UART_Config(UART_HandleTypeDef *huart) {
 	huart->Init.Parity = UART_PARITY_NONE;
 	huart->Init.HwFlowCtl = UART_HWCONTROL_NONE;
 	huart->Init.Mode = UART_MODE_TX_RX;
+
+	HAL_NVIC_SetPriority(USART1_IRQn, 0x0F, 0x00);
+	HAL_NVIC_EnableIRQ(USART1_IRQn);
+
 }
 
-void DMA_Init(DMA_HandleTypeDef *hdma)
+void DMA_Init()
 {
 	__HAL_RCC_DMA1_CLK_ENABLE();
 
-    hdma->Instance = DMA1;
-    hdma->Init = DMA1_BASE;
-    hdma->Init.Direction = DMA_PERIPH_TO_MEMORY;
-    hdma->Init.PeriphInc = DMA_PINC_DISABLE;
-    hdma->Init.MemInc = DMA_MINC_ENABLE;
-    hdma->Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
-    hdma->Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
-    hdma->Init.Mode = DMA_CIRCULAR;
-    hdma->Init.Priority = DMA_PRIORITY_VERY_HIGH;
+	DMAHandle.Instance = DMA1;
+	DMAHandle.Init.Channel = DMA1_Stream0;
+	DMAHandle.Init.Direction = DMA_PERIPH_TO_MEMORY;
+	DMAHandle.Init.PeriphInc = DMA_PINC_DISABLE;
+	DMAHandle.Init.MemInc = DMA_MINC_ENABLE;
+	DMAHandle.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
+	DMAHandle.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
+	DMAHandle.Init.Mode = DMA_CIRCULAR;
+	DMAHandle.Init.Priority = DMA_PRIORITY_VERY_HIGH;
+
+    HAL_DMA_Init(&DMAHandle);
+
+	__HAL_LINKDMA(&UartHandle, hdmarx, DMAHandle);
+
+	HAL_NVIC_SetPriority(DMA1_Stream0_IRQn, 0, 0);
+	HAL_NVIC_EnableIRQ(DMA1_Stream0_IRQn);
+
 }
 
-void USART1_IRQHandler(void)
+void USART1_IRQHandler()
 {
 	HAL_UART_IRQHandler(&UartHandle);
 }
 
 void UART_Buffer_Reset()
 {
-		memset(&recieve_buffer[0], '\0', sizeof(recieve_buffer));
+	memset(&g_code_buffer[0], '\0', sizeof(g_code_buffer));
+	UartHandle.RxXferCount = 80;
+}
+
+void Button_Interrupt_Init()
+{
+	BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_EXTI);
+}
+
+void EXTI15_10_IRQHandler()
+{
+	HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_11);
+}
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+	event_counter++;
+	UART_Buffer_Reset();
+	printf("Buffer reset interrupt event: %d\n", event_counter);
+}
+
+void Test_Timer_Init()
+{
+	__HAL_RCC_TIM2_CLK_ENABLE();
+
+	InterruptTimHandle.Instance               = TIM2;
+	InterruptTimHandle.Init.Period            = 16460;
+	InterruptTimHandle.Init.Prescaler         = (0xFFFF / 5);
+	InterruptTimHandle.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
+	InterruptTimHandle.Init.CounterMode 	  = TIM_COUNTERMODE_UP;
+	HAL_TIM_Base_Init(&InterruptTimHandle);
+	HAL_TIM_Base_Start_IT(&InterruptTimHandle);
+
+	HAL_NVIC_SetPriority(TIM2_IRQn, 0x0F, 0x00);
+	HAL_NVIC_EnableIRQ(TIM2_IRQn);
+}
+
+void TIM2_IRQHandler()
+{
+	HAL_TIM_IRQHandler(&InterruptTimHandle);
+}
+
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+	printf("UART Receive Limit Counter: %d\n", UartHandle.RxXferCount);
+
+	if (HAL_UART_GetState(&UartHandle) == HAL_UART_STATE_READY) {
+		printf("UART: Peripheral Initialized and ready for use.\n");
+	}
+
+	if (HAL_UART_GetState(&UartHandle) == HAL_UART_STATE_BUSY_RX) {
+			printf("UART: Data Transmission process is ongoing.\n");
+		}
+
+	if (HAL_UART_GetState(&UartHandle) == HAL_UART_STATE_BUSY_TX_RX) {
+			printf("UART: Data Transmission and Reception process is ongoing.\n");
+		}
+
+	if (HAL_UART_GetState(&UartHandle) == HAL_UART_STATE_TIMEOUT) {
+			printf("UART: Timeout state\n");
+		}
+
+	if (HAL_UART_GetState(&UartHandle) == HAL_UART_STATE_ERROR) {
+			printf("UART: Error.\n");
+		}
+}
+
+void DMA1_Stream1_IRQHandler()
+{
+  HAL_DMA_IRQHandler(&DMAHandle);
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+	printf("HAL_UART_RxCpltCallback Interrupt event\n");
 }
 
 /**
