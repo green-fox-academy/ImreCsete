@@ -114,7 +114,7 @@ int main(void) {
 
 	Button_Interrupt_Init();
 	HAL_UART_Receive_IT(&UartHandle, &UART_IT_Data, 1);
-	Test_Timer_Init();
+	Test_Timer_Init(); // Debug dummy function along with IRQ handlers
 
 	while (1) {
 
@@ -163,6 +163,7 @@ void USART1_IRQHandler()
 void UART_Buffer_Reset()
 {
 	memset(&G_Code_Buffer[0], '\0', sizeof(G_Code_Buffer));
+	memset(&Tokenizer_G_Code_String[0], '\0', sizeof(Tokenizer_G_Code_String));
 }
 
 void Button_Interrupt_Init()
@@ -178,7 +179,7 @@ void EXTI15_10_IRQHandler()
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 	UART_Buffer_Reset();
-	printf("Buffer reset interrupt event: %d\n", event_counter);
+	printf("Buffer reset EXTI interrupt event!\n");
 }
 
 void Test_Timer_Init()
@@ -205,36 +206,40 @@ void TIM2_IRQHandler()
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 	printf("Contents of g_code_buffer: ");
-				for (int i = 0; i < (sizeof(G_Code_Buffer)/sizeof(G_Code_Buffer[0])); i++) {
-						printf("%c", G_Code_Buffer[i]);
-				}
-			printf("\n");
+
+	for (int i = 0; i < (sizeof(G_Code_Buffer)/sizeof(G_Code_Buffer[0])); i++) {
+		printf("%c", G_Code_Buffer[i]);
+	}
+
+	printf("\n");
 
 	printf("Contents of Tokenizer_G_Code_String: ");
-				for (int i = 0; i < (sizeof(Tokenizer_G_Code_String)/sizeof(Tokenizer_G_Code_String[0])); i++) {
-						printf("%c", Tokenizer_G_Code_String[i]);
-				}
-			printf("\n");
+
+	for (int i = 0; i < (sizeof(Tokenizer_G_Code_String)/sizeof(Tokenizer_G_Code_String[0])); i++) {
+		printf("%c", Tokenizer_G_Code_String[i]);
+	}
+
+	printf("\n");
+
+	printf("Receive Data register ASCII: %d Character: %c\n", USART1->RDR, USART1->RDR);
+	printf("USART1 state is: %d\n", UartHandle.RxState);
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	printf("HAL_UART_RxCpltCallback event\n");
+	if (Receive_Index == 0) {
+		memset(&G_Code_Buffer[0], '\0', sizeof(G_Code_Buffer));
 
-	/*if (Receive_Index == 0) {
-		for (int i = 0; i < (sizeof(G_Code_Buffer)/sizeof(G_Code_Buffer[0])); i++) {
-			G_Code_Buffer[i] = 0;
-		}
-	}*/
-	 if (UART_IT_Data != '\n') {
+	} if (UART_IT_Data != '\n') {
 		G_Code_Buffer[Receive_Index++] = UART_IT_Data;
 
 		for (int i = 0; i < (sizeof(Tokenizer_G_Code_String)/sizeof(Tokenizer_G_Code_String[0])); i++) {
 			Tokenizer_G_Code_String[i] = G_Code_Buffer[i];
 		}
-	 }
-
-	printf("Receive_Index is at %d\n", Receive_Index);
+	} else {
+		Tokenizer_G_Code_String[Receive_Index + 1] = UART_IT_Data;
+		Receive_Index = 0;
+	}
 
 	HAL_UART_Receive_IT(&UartHandle, &UART_IT_Data, 1);
 }
