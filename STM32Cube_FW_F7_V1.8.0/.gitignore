@@ -15,3 +15,5 @@ package.xml
 *.html
 Projects/*/*
 !GreenFox
+
+STM32Cube_FW_F7_V1.9.0/*
