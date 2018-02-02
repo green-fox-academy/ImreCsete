@@ -21,7 +21,7 @@ int main()
         printf("%d, ", arr[i]);
     }
 
-    printf("\n\nThe average of even numbers are: %f\n", arr_even_avg(arr, 10));
+    printf("\n\nThe average of even numbers are: %.2f\n", arr_even_avg(arr, (sizeof(arr) / sizeof(arr[0]))));
 }
 
 float arr_even_avg(int array[], int size)
@@ -38,10 +38,11 @@ float arr_even_avg(int array[], int size)
             sum += even_arr[j];
             j++;
         } else {
-            even_arr[size-k] = 0;
+            even_arr[size - k] = 0;
             k++;
         }
     }
 
-    return avg = (sum / (sizeof(even_arr)/sizeof(even_arr[0])));
+    return avg = (sum / (sizeof(even_arr) / sizeof(even_arr[0])));
+
 }
