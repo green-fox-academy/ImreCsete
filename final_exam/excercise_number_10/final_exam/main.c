@@ -21,17 +21,14 @@ int main()
         printf("%d, ", arr[i]);
     }
 
-    printf("\n\n");
-
-    arr_even_avg(arr, 10);
-
-    //printf("\nThe avg of even numbers are: %f\n", arr_even_avg(&arr));
+    printf("\n\nThe average of even numbers are: %f\n", arr_even_avg(arr, 10));
 }
 
 float arr_even_avg(int array[], int size)
 {
     int even_arr[size];
     int j = 0;
+    int k = 1;
     int sum = 0;
     float avg = 0;
 
@@ -40,11 +37,11 @@ float arr_even_avg(int array[], int size)
             even_arr[j] = array[i];
             sum += even_arr[j];
             j++;
+        } else {
+            even_arr[size-k] = 0;
+            k++;
         }
     }
 
-    for (int i = 0; i < size; i++) {
-        printf("%d, ", even_arr[i]);
-    }
-    //return avg = (sum / (sizeof(even_arr)/sizeof(even_arr[0])));
+    return avg = (sum / (sizeof(even_arr)/sizeof(even_arr[0])));
 }
