@@ -43,6 +43,6 @@ float arr_even_avg(int array[], int size)
         }
     }
 
-    return avg = (sum / (sizeof(even_arr) / sizeof(even_arr[0])));
+    return avg = (sum / j);
 
 }
