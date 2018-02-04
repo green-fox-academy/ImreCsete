@@ -14,7 +14,7 @@
   -------:|:-----------------------
   Day 1  | [Functions](https://github.com/greenfox-academy/ImreCsete/tree/master/week-02/day-1)
   Day 2  | [Arrays and User Input](https://github.com/greenfox-academy/ImreCsete/tree/master/week-02/day-2)
-  Day 3  | [Practice]
+  Day 3  | Practice
   Day 4  | [Palindrome, anagramm](https://github.com/greenfox-academy/ImreCsete/tree/master/week-02/day-4)
   Day 5  | [Palindrome, anagramm](https://github.com/greenfox-academy/ImreCsete/tree/master/week-02/day-4)
   
@@ -22,7 +22,7 @@
   -------:|:-----------------------
   Day 1  | [Debugging](https://github.com/greenfox-academy/ImreCsete/tree/master/week-03/day-1)
   Day 2  | [Parsing and type-casting](https://github.com/greenfox-academy/ImreCsete/tree/master/week-03/day-2)
-  Day 3  | [Practice]
+  Day 3  | Practice
   Day 4  | [CLI calculator](https://github.com/greenfox-academy/ImreCsete/tree/master/week-03/Calculator)
   Day 5  | [CLI calculator](https://github.com/greenfox-academy/ImreCsete/tree/master/week-03/Calculator)
   
