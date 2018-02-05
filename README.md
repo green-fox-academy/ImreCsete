@@ -94,4 +94,4 @@
 
 # Links
 
-[Final Exam Links](https://github.com/greenfox-academy/ImreCsete/tree/master/final_exam_links)
+[Final Exam Links](https://github.com/greenfox-academy/ImreCsete/tree/master/final_exam)
