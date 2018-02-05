@@ -42,6 +42,56 @@
   Day 4  | [C practice](https://github.com/greenfox-academy/ImreCsete/tree/master/week-04)
   Day 5  | [Exam](https://github.com/ImreCsete/static-foundation-exam-1st)
 
+## Orientation
+
+  Week 6  | C++
+  -------:|:-----------------------
+  Day 1  | [C vs C++](https://github.com/greenfox-academy/ImreCsete/tree/master/week-06/day-1)
+  Day 2  | [OOP basics](https://github.com/greenfox-academy/ImreCsete/tree/master/week-06/day-2)
+  Day 3  | [OOP part2](https://github.com/greenfox-academy/ImreCsete/tree/master/week-06/day-3)
+  Day 4  | Practice
+  Day 5  | [Todo app in C++](https://github.com/greenfox-academy/ImreCsete/tree/master/week-06/ToDoApp_Factory)
+  
+  Week 7  | C++
+  -------:|:-----------------------
+  Day 1  | [cpp-try-catch](https://github.com/greenfox-academy/ImreCsete/tree/master/week-07/day-1)
+  Day 2  | [cpp-overaloading](https://github.com/greenfox-academy/ImreCsete/tree/master/week-07/day-2)
+  Day 3  | Practice
+  Day 4  | [Temp logger server basics in C++](https://github.com/greenfox-academy/ImreCsete/tree/master/week-07/temperature_logger)
+  Day 5  | [Temp logger server basics in C++](https://github.com/greenfox-academy/ImreCsete/tree/master/week-07/temperature_logger)
+  
+  Week 8  | Introduction to STM32, HAL, GPIO
+  -------:|:-----------------------
+  Day 1  | [Intro to STM32, GPIO](https://github.com/greenfox-academy/ImreCsete/commits/master/STM32Cube_FW_F7_V1.8.0/Projects/STM32746G-Discovery/GreenFox/led_blinker)
+  Day 2  | [Multiple GPIOs](https://github.com/greenfox-academy/ImreCsete/commits/master/STM32Cube_FW_F7_V1.8.0/Projects/STM32746G-Discovery/GreenFox/led_blinker)
+  Day 3  | Practice
+  Day 4  | [Reaction tester game](https://github.com/greenfox-academy/ImreCsete/blob/master/STM32Cube_FW_F7_V1.8.0/Projects/STM32746G-Discovery/GreenFox/reaction_game/Src/main.c)
+  Day 5  | [Reaction tester game](https://github.com/greenfox-academy/ImreCsete/blob/master/STM32Cube_FW_F7_V1.8.0/Projects/STM32746G-Discovery/GreenFox/reaction_game/Src/main.c)
+  
+  Week 9  | Timers and interrupts
+  -------:|:-----------------------
+  Day 1  | [Timer](https://github.com/greenfox-academy/ImreCsete/blob/master/STM32Cube_FW_F7_V1.8.0/Projects/STM32746G-Discovery/GreenFox/timer_pwm/Src/main.c)
+  Day 2  | [Interrupt](https://github.com/greenfox-academy/ImreCsete/commits/master/STM32Cube_FW_F7_V1.8.0/Projects/STM32746G-Discovery/GreenFox/interrupts)
+  Day 3  | Practice
+  Day 4  | [Control loop project](https://github.com/greenfox-academy/ImreCsete/blob/master/STM32Cube_FW_F7_V1.8.0/Projects/STM32746G-Discovery/GreenFox/interrupts/Src/main.c)
+  Day 5  | [Control loop project](https://github.com/greenfox-academy/ImreCsete/blob/master/STM32Cube_FW_F7_V1.8.0/Projects/STM32746G-Discovery/GreenFox/interrupts/Src/main.c)
+  
+  Week 10  | Communication
+  -------:|:-----------------------
+  Day 1  | [Serial communication basics](https://github.com/greenfox-academy/ImreCsete/commits/master/STM32Cube_FW_F7_V1.8.0/Projects/STM32746G-Discovery/GreenFox/communication)
+  Day 2  | [I2C](https://github.com/greenfox-academy/ImreCsete/blob/master/STM32Cube_FW_F7_V1.8.0/Projects/STM32746G-Discovery/GreenFox/I2C/Src/main.c)
+  Day 3  | Practice
+  Day 4  | [Temperature logger project](https://github.com/greenfox-academy/ImreCsete/blob/master/STM32Cube_FW_F7_V1.8.0/Projects/STM32746G-Discovery/GreenFox/temperature_logger/Src/main.c)
+  Day 5  | [Exam](https://github.com/ImreCsete/static-orientation-exam-1st)
+  
+  Week 11  | LabVIEW
+  -------:|:-----------------------
+  Day 1  | [LabVIEW introduction](https://github.com/greenfox-academy/ImreCsete/tree/master/week-11/day-1)
+  Day 2  | [LabVIEW file handling and error handling](https://github.com/greenfox-academy/ImreCsete/tree/master/week-11/day-3)
+  Day 3  | Practice
+  Day 4  | [Temperature logger with LabVIEW](https://github.com/greenfox-academy/ImreCsete/tree/master/week-11/day-4)
+  Day 5  | [Temperature logger with LabVIEW](https://github.com/greenfox-academy/ImreCsete/tree/master/week-11/day-4)
+
 # Links
 
 [Final Exam Links](https://github.com/greenfox-academy/ImreCsete/tree/master/final_exam_links)
